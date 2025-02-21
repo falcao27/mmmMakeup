@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Menina Moça Makeup</title>
+        <link rel="icon" href="android-chrome-192x192.png">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+        <!-- Carrega o Supabase primeiro -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="styles_new.css">
+
+       
+        <!-- Depois carrega seus scripts -->
+        <script type="module" src="script.js"></script>
+        
+</head>
+<body class="bg-gray-50 font-[Poppins]">
+
+    
+
+    <!-- Header Fixo -->
+    <header class="fixed w-full z-50 bg-white/80 backdrop-blur-md shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <h1 class="text-3xl font-dancing text-pink-500 font-bold">Menina Moça</h1>
+
+                <!-- Menu Central -->
+                <nav class="hidden md:flex space-x-8 items-center">
+                    <a href="#inicio" class="text-gray-600 hover:text-pink-500 transition-colors">Início</a>
+                    <a href="#produtos" class="text-gray-600 hover:text-pink-500 transition-colors">Produtos</a>
+                    <a href="#promocoes" class="text-gray-600 hover:text-pink-500 transition-colors">Promoções</a>
+                    <a href="#Sobre" class="text-gray-600 hover:text-pink-500 transition-colors">Sobre</a>
+                    
+                    
+                    <!-- Links Sociais -->
+                    <div class="flex items-center space-x-4 ml-4">
+                        <!-- Instagram -->
+                        <a href="https://instagram.com/meninamocamakeup_" 
+                           target="_blank" 
+                           class="text-gray-600 hover:text-pink-500 transition-colors">
+                            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+
+                        <!-- WhatsApp -->
+                        <a href="https://wa.me/5585988740788" 
+                           target="_blank" 
+                           class="text-gray-600 hover:text-pink-500 transition-colors">
+                            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </nav>
+                      
+                <!-- Busca e Carrinho -->
+                <div class="flex items-center space-x-4">
+                    <div class="search-container">
+                        <input 
+                            type="text" 
+                            id="search-input" 
+                            placeholder="Nome do Produto" 
+                            class="search-input"
+                            oninput="handleSearchInput()"
+                        />
+                        <button 
+                            id="search-button" 
+                            class="search-button hidden" 
+                            onclick="filterProductsBySearchTerm(document.getElementById('search-input').value)"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M16.5 10.5A6 6 0 1110.5 4.5a6 6 0 016 6z" />
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <button onclick="toggleCarrinho()" data-open-cart class="relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                        </svg>
+                        <span id="carrinho-badge" class="absolute -top-2 -right-2 bg-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                            0
+                        </span>
+                    </button>
+
+                    
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section com Slider -->
+    <section id="inicio" class="pt-16">
+        <div class="relative h-[600px] overflow-hidden">
+            <div id="slider" class="flex transition-transform duration-500 h-full">
+                <!-- Slides -->
+                <div class="w-full flex-shrink-0">
+                    <img src="Batton.jpg" alt="Batton" 
+                         class="w-full h-full object-cover">
+                </div>
+                <div class="w-full flex-shrink-0">
+                    <img src="Paleta.jpg" alt="Paleta" 
+                         class="w-full h-full object-cover">
+                </div>
+                <div class="w-full flex-shrink-0">
+                    <img src="Pincel.jpg" alt="Pincel" 
+                         class="w-full h-full object-cover">
+                </div>
+            </div>
+            
+            <!-- Adicionar botões de navegação -->
+
+
+            <!-- Overlay com texto -->
+            <div class="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent flex items-center">
+                <div class="container mx-auto px-4">
+                    <div class="max-w-xl text-white">
+                        <h2 class="text-5xl font-bold mb-4">Realce Sua Beleza Natural</h2>
+                        <p class="text-lg mb-8">Descubra nossa coleção exclusiva de produtos de beleza</p>
+                        <a href="#destaques" 
+                           class="bg-pink-500 text-white px-8 py-3 rounded-full 
+                                  hover:bg-pink-600 transition-colors inline-block">
+                            Ver Destaques
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção de Categorias e Produtos -->
+    <section id="produtos" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Nossos Produtos</h2>
+            
+            <!-- Adicionar um elemento para mensagens de erro -->
+            <div id="error-message" class="fixed top-4 right-4 bg-red-500 text-white p-4 rounded-lg hidden"></div>
+
+            <!-- Categorias -->
+            <div id="categorias-buttons"></div>
+
+            <!-- Grid de Produtos -->
+            <div id="produtos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 md:px-0">
+                <!-- Os produtos serão inseridos aqui -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção de Destaques -->
+    <section id="destaques" class="py-16 bg-gradient-to-br from-pink-500 to-black">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-black">
+                Destaques
+            </h2>
+            
+            <div class="relative max-w-4xl mx-auto">
+                <!-- Container do Slide -->
+                <div class="overflow-hidden rounded-2xl">
+                    <div id="destaques-container" class="flex transition-all duration-500 ease-out">
+                        <!-- Os produtos em destaque serão inseridos aqui -->
+                    </div>
+                </div>
+
+                <!-- Botões de Navegação -->
+                <button id="prev-destaque" onclick="prevDestaque()" 
+                        class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 z-10 
+                               bg-white/80 p-3 rounded-full shadow-lg hover:bg-pink-500 hover:text-white 
+                               transition-all duration-300 backdrop-blur-sm group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                
+                <button id="next-destaque" onclick="nextDestaque()" 
+                        class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 z-10 
+                               bg-white/80 p-3 rounded-full shadow-lg hover:bg-pink-500 hover:text-white 
+                               transition-all duration-300 backdrop-blur-sm group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção de Promoções -->
+    <section id="promocoes" class="py-16 bg-gradient-to-r from-pink-500 to-transparent text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-8">Ofertas Especiais</h2>
+            <div id="ofertas-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Os produtos em promoção serão inseridos aqui -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Sobre Nós -->
+    <section id="Sobre" class="bg-pink-50 py-16 mt-16">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <!-- Coluna da Imagem -->
+          <div class="rounded-lg overflow-hidden shadow-lg">
+            <img 
+              src="sobre.jpg" 
+              alt="Sobre Menina Moça" 
+              class="w-full h-full object-cover"
+            >
+          </div>
+          
+          <!-- Coluna do Texto -->
+           
+          <div class="space-y-4">
+            
+            <h2 class="text-3xl font-bold text-pink-600">Nossa História</h2>
+            <p class="text-gray-700 leading-relaxed">
+                Oi, Me chamo Jamile Lima, sou a criadora da Menina Moça.
+              A Menina Moça nasceu no ano de 2018 com o sonho de trazer beleza e autoestima para todas as mulheres. 
+              Nossos produtos são cuidadosamente selecionados para propocionar a melhor experiência para você, e também contamos com um atendimento personalizado 
+              para a oferecer as melhores opções em maquiagens e cosméticos.
+            </p>
+            <p class="text-gray-700 leading-relaxed">
+              Nossa missão é fazer com que cada cliente se sinta especial e confiante, 
+              proporcionando uma experiência única de compra e atendimento de qualidade.
+            </p>
+            <div class="mt-6">
+                
+              
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-pink-600 text-white py-8 mt-16">
+      <div class="container mx-auto px-4 text-center">
+        <p>&copy; 2025 Menina Moça. Todos os direitos reservados.</p>
+        
+                    
+    <!-- Carrinho Sidebar -->
+    <div id="carrinho" class="fixed right-0 top-0 h-full w-96 bg-white shadow-2xl 
+                             transform translate-x-full transition-transform duration-300 z-50">
+        <div class="flex flex-col h-full">
+            <!-- Header do Carrinho -->
+            <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                <h2 class="text-xl font-semibold">Seu Carrinho</h2>
+                <button onclick="toggleCarrinho()" data-close-cart class="text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Conteúdo do Carrinho -->
+            <div id="carrinho-items">
+                <!-- Os itens serão inseridos aqui dinamicamente usando window.carrinhoManager -->
+                <!-- Exemplo de item no carrinho -->
+                <div class="flex justify-between items-center border-b border-gray-200 p-2" id="item-1">
+                    <span>Produto 1</span>
+                    <div class="flex items-center">
+                        <button onclick="decreaseQuantity('item-1')" class="text-gray-600">-</button>
+                        <span id="quantity-item-1" class="mx-2">1</span>
+                        <button onclick="increaseQuantity('item-1')" class="text-gray-600">+</button>
+                        <button onclick="removeItem('item-1')" class="text-red-600 ml-2">Excluir</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer do Carrinho -->
+            <div class="p-4 border-t border-gray-100">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-lg font-semibold">Total:</span>
+                    <span id="carrinho-total" class="text-xl font-bold text-pink-500">R$ 0,00</span>
+                </div>
+                <button onclick="finalizarCompra()" 
+                        class="w-full bg-pink-500 text-white py-3 rounded-lg
+                               hover:bg-pink-600 transition-colors">
+                    Finalizar Compra
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Container para os botões de categoria -->
+    <div id="categorias-container" class="flex flex-wrap gap-2 mb-8 px-4 md:px-0">
+        <!-- As categorias serão inseridas aqui dinamicamente -->
+    </div>
+    
+    <!-- Modal de Detalhes do Produto -->
+    <div id="modal-produto" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto mx-4">
+            <div class="relative p-2" id="modal-content">
+                <!-- Conteúdo será inserido dinamicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Mova o script para cá -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>

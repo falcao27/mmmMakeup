@@ -122,6 +122,198 @@
         /* ── Tabs ── */
         .tab-btn { padding:.4rem .9rem; border-radius:.45rem; font-size:.78rem; font-weight:500; cursor:pointer; border:1.5px solid #e2e8f0; background:white; color:#64748b; transition:all .15s; }
         .tab-btn.active { background:#ec4899; color:white; border-color:#ec4899; }
+
+        /* Responsividade do painel admin */
+        main { transition: margin .2s ease, padding .2s ease; }
+        .tbl-wrap { -webkit-overflow-scrolling: touch; }
+        .tbl-wrap table { min-width: 760px; }
+
+        @media (max-width: 1024px) {
+            .sidebar { width: 208px; }
+            main { margin-left: 208px !important; padding: 1.25rem !important; }
+            .stat-card { padding: 1rem; }
+        }
+
+        @media (max-width: 820px) {
+            body { background: #f8fafc; }
+            #app { min-height: 100vh; }
+
+            .sidebar {
+                position: sticky;
+                top: 0;
+                width: 100%;
+                min-height: auto;
+                max-height: none;
+                overflow: visible;
+                padding: .85rem .9rem !important;
+                border-radius: 0;
+                z-index: 60;
+            }
+
+            .sidebar > .mb-5 {
+                margin-bottom: .75rem !important;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: .75rem;
+            }
+
+            .sidebar > .mb-5 h1 {
+                font-size: 1.45rem;
+                line-height: 1;
+                white-space: nowrap;
+            }
+
+            .sidebar > .mb-5 p { display: none; }
+
+            .sidebar nav {
+                display: flex;
+                gap: .45rem;
+                overflow-x: auto;
+                padding-bottom: .15rem;
+                scrollbar-width: none;
+            }
+
+            .sidebar nav::-webkit-scrollbar { display: none; }
+            .nav-section { display: none; }
+
+            .nav-item {
+                flex: 0 0 auto;
+                padding: .58rem .75rem;
+                border-radius: .7rem;
+                font-size: .76rem;
+                white-space: nowrap;
+            }
+
+            .nav-item i {
+                font-size: .95rem;
+                width: 1rem;
+            }
+
+            .sidebar > .border-t {
+                display: flex;
+                align-items: center;
+                gap: .5rem;
+                border-top: 1px solid rgba(255,255,255,.08) !important;
+                margin-top: .65rem !important;
+                padding-top: .65rem !important;
+            }
+
+            .sidebar > .border-t > .px-1 {
+                min-width: 0;
+                flex: 1;
+                margin-bottom: 0 !important;
+            }
+
+            .sidebar > .border-t .nav-item { padding: .5rem .65rem; }
+            main { margin-left: 0 !important; padding: 1rem !important; }
+
+            .page > .flex.items-center.justify-between {
+                align-items: flex-start;
+                gap: .85rem;
+                flex-wrap: wrap;
+            }
+
+            .page > .flex.items-center.justify-between > div:first-child { min-width: 0; }
+
+            .page > .flex.items-center.justify-between .btn,
+            .page > .flex.items-center.justify-between > .flex {
+                flex-wrap: wrap;
+            }
+
+            #stats-grid,
+            #estoque-kpis,
+            #rel-kpis {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: .75rem !important;
+            }
+
+            .stat-card,
+            #stats-grid > div,
+            #estoque-kpis > div,
+            #rel-kpis > div {
+                min-width: 0;
+                padding: .95rem !important;
+            }
+
+            .card { border-radius: .8rem; }
+            .chart-container { height: 220px; }
+            .card > .flex.items-center.gap-3 { align-items: stretch; }
+            .card .inp { max-width: none !important; }
+            .tab-btn, .btn { min-height: 36px; }
+
+            .modal-bg {
+                align-items: flex-start;
+                padding: .75rem;
+                overflow-y: auto;
+            }
+
+            .modal-box {
+                max-height: none;
+                padding: 1rem;
+                border-radius: .85rem;
+            }
+
+            #modal-crud-campos .grid,
+            #modal-venda-conteudo .grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar { padding: .75rem !important; }
+            .sidebar > .border-t { flex-wrap: wrap; }
+            .sidebar > .border-t > .px-1 { flex-basis: 100%; }
+
+            .sidebar > .border-t a,
+            .sidebar > .border-t button {
+                flex: 1 1 0;
+                justify-content: center;
+            }
+
+            main { padding: .8rem !important; }
+
+            #stats-grid,
+            #estoque-kpis,
+            #rel-kpis {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: .65rem !important;
+            }
+
+            .stat-card,
+            #stats-grid > div,
+            #estoque-kpis > div,
+            #rel-kpis > div {
+                padding: .85rem !important;
+            }
+
+            .stat-card p,
+            #stats-grid p,
+            #estoque-kpis p,
+            #rel-kpis p {
+                font-size: .68rem !important;
+                line-height: 1.2;
+            }
+
+            .stat-card h3,
+            #stats-grid h3,
+            #estoque-kpis h3,
+            #rel-kpis h3,
+            .stat-card .text-2xl,
+            #stats-grid .text-2xl,
+            #estoque-kpis .text-2xl,
+            #rel-kpis .text-2xl {
+                font-size: 1.1rem !important;
+                line-height: 1.15;
+                word-break: break-word;
+            }
+
+            .chart-container { height: 200px; }
+            .tbl-wrap { margin-left: -.25rem; margin-right: -.25rem; }
+            table { font-size: .76rem; }
+            thead th, tbody td { padding: .58rem .75rem; }
+            .btn { justify-content: center; padding: .45rem .7rem; }
+        }
     </style>
 </head>
 <body>

@@ -1,0 +1,676 @@
+.slide.active {
+    transition: opacity 0.2s ease-in-out;
+    opacity: 2;
+}
+
+.slider {
+    display: flex;
+    overflow: hidden;
+    transition: transform 0.5s ease-in-out;
+    margin: 2rem auto;
+    max-width: 1200px;
+}
+
+.slide {
+    min-width: 100%;
+    height: 500px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.filter-chip {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.filter-chip:hover {
+    transform: translateY(-2px);
+}
+
+.product-card {
+    transition: all 0.3s ease;
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-card:hover {
+    transform: scale(1.02);
+    z-index: 20;
+}
+
+.floating-filters {
+    backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.category-btn {
+    position: relative;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+}
+
+.category-btn.active {
+    color: #ec4899;
+    font-weight: bold;
+    background-color: rgba(236, 72, 153, 0.1);
+}
+
+.slideshow-container {
+    max-width: 100%;
+    position: relative;
+    margin: auto;
+}
+
+.fade {
+    animation-name: fade;
+    animation-duration: 1s;
+}
+
+@keyframes fade {
+    from {opacity: 1} 
+    to {opacity: 1}
+}
+
+.dot {
+    height: 12px;
+    width: 12px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+
+body {
+    background-color: #f0f0f0;
+    background-position: cover;
+    background-repeat: no-repeat;
+}
+
+header {
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.font-dancing {
+    font-family: 'Dancing Script', cursive;
+}
+
+.header-shell {
+    width: min(100%, 1280px);
+}
+
+.site-logo {
+    min-width: 150px;
+    line-height: 1;
+}
+
+.header-actions {
+    min-width: 0;
+}
+
+.header-search {
+    width: clamp(180px, 22vw, 260px);
+    height: 42px;
+    margin: 0;
+    background: #fff;
+    border-color: #e5e7eb;
+}
+
+.header-search .search-input {
+    min-width: 0;
+    height: 100%;
+    padding: 0 12px;
+    font-size: 13px;
+}
+
+@media (max-width: 900px) {
+    .site-logo {
+        min-width: auto;
+    }
+
+    .header-search {
+        width: 180px;
+    }
+}
+
+.font-quicksand {
+    font-family: 'Quicksand', sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.section-spacing {
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+}
+
+#carrinho-sidebar {
+    z-index: 1000;
+    box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+}
+
+.translate-x-full {
+    transform: translateX(100%);
+}
+
+.slide-in {
+    transform: translateX(0) !important;
+}
+
+.product-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 100px -200px rgba(0, 0, 0, 0.2);
+}
+
+.carrinho-item-enter {
+    opacity: 0;
+    transform: translateX(20px);
+}
+
+.carrinho-item-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 300ms, transform 300ms;
+}
+
+
+
+@media (max-width: 768px) {
+    .product-card {
+        width: calc(50% - 1rem);
+    }
+    
+    #carrinho {
+        width: 100%;
+        max-width: none;
+    }
+    
+    .cart-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .cart-item img {
+        width: 100%;
+        max-width: 200px;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-card {
+        width: 100%;
+    }
+    
+    #header-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+#carrinho {
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#carrinho-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #e11d48;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.cart-item-enter {
+    opacity: 0;
+    transform: translateX(20px);
+}
+
+.cart-item-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 300ms, transform 300ms;
+}
+
+.cart-item-exit {
+    opacity: 1;
+}
+
+.cart-item-exit-active {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 300ms, transform 300ms;
+}
+
+#slider {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 100%;
+}
+
+#slider > div {
+    flex: 0 0 100%;
+    width: 100%;
+}
+
+.slider-button {
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.slider-button:hover {
+    opacity: 1;
+}
+
+.line-through {
+    text-decoration: line-through;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    padding: 5px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.search-input {
+    border: none;
+    outline: none;
+    padding: 10px;
+    border-radius: 25px;
+    flex: 1;
+}
+
+.search-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.search-button.hidden {
+    display: none;
+}
+
+/* Adicione isso ao seu arquivo styles.css */
+
+/* Previne seleção de texto indesejada */
+body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Permite seleção apenas em campos de input */
+input, 
+textarea {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+@media (min-width: 768px) {
+    .product-card {
+        width: calc(33.33% - 1rem); /* 3 colunas */
+    }
+}
+
+@media (max-width: 768px) {
+    .product-card {
+        width: calc(50% - 1rem); /* 2 colunas */
+    }
+}
+
+@media (max-width: 480px) {
+    .product-card {
+        width: 100%; /* 1 coluna */
+    }
+}
+
+.product-card {
+    position: relative;
+    overflow: hidden; /* Para esconder o texto fora da caixa */
+}
+
+.add-to-cart-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-100%, -100%);
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #000000; /* Cor do texto */
+    padding: 10px 20px;
+    border-radius: 5px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    text-align: center;
+}
+
+.product-card:hover .add-to-cart-overlay {
+    opacity: 1; /* Mostra o overlay ao passar o mouse */
+}
+
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transição suave */
+    border-radius: 8px; /* Bordas arredondadas */
+    overflow: hidden; /* Para esconder o conteúdo que ultrapassa as bordas */
+}
+
+.product-card:hover {
+    transform: translateY(-20px); /* Eleva a caixa para cima mais intensamente */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 10); /* Sombra mais intensa */
+}
+
+.add-to-cart-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 10); /* Fundo mais opaco */
+    color: #000000; /* Cor do texto */
+    padding: 15px 25px; /* Aumentar o padding para mais espaço */
+    border-radius: 5px;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Transição suave */
+    text-align: center;
+    font-weight: bold; /* Aumentar a espessura do texto */
+    font-size: 1.1rem; /* Aumentar o tamanho da fonte */
+}
+
+.product-card:hover .add-to-cart-overlay {
+    opacity: 1; /* Mostra o overlay ao passar o mouse */
+    transform: translate(-100%, -100%) scale(1.05); /* Leve aumento no overlay */
+}
+.subcategories {
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    max-height: 200px;
+    opacity: 1;
+}
+
+.subcategories.hidden {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.category-group {
+    position: relative;
+}
+
+#slider {
+    transition: transform 0.5s ease-in-out;
+}
+
+.slider-indicator.active {
+    background-color: white;
+}
+
+/* Estilos para o dropdown hover */
+.group:hover .group-hover\:block {
+    display: block;
+}
+
+.category-btn:hover + .hidden {
+    display: block;
+}
+
+/* Garantir que o dropdown permaneça visível enquanto o mouse estiver sobre ele */
+.group div[role="menu"]:hover {
+    display: block;
+}
+
+/* Animação suave para o dropdown */
+.group div[role="menu"] {
+    transition: opacity 0.2s ease-in-out;
+    opacity: 0;
+}
+
+.group:hover div[role="menu"] {
+    opacity: 1;
+}
+
+/* Estilos para o dropdown de subcategorias - posicionado via JS com position:fixed */
+.subcategories-dropdown {
+    pointer-events: auto;
+    animation: dropdownFadeIn 0.15s ease;
+}
+
+.subcategories-dropdown.hidden {
+    display: none !important;
+}
+
+@keyframes dropdownFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Estilo para a tag de promoção */
+.promocao {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff69b4;  /* Pink para promoção */
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    color: white;
+    font-size: 0.875rem;
+    z-index: 2;
+}
+
+
+
+/* Estilo comum para cards em promoção e destaque */
+.product-card.promocao-card,
+.product-card.destaque-card {
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+/* Estilo específico para cards em promoção */
+.product-card.promocao-card {
+    border-color: rgba(255, 105, 180, 0.3);  /* Pink transparente */
+}
+
+
+
+/* Hover effects */
+.product-card.promocao-card:hover,
+.product-card.destaque-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Estilo padrão para títulos de seção */
+.section-title {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: #ec4899;
+    border-radius: 2px;
+}
+
+#destaques-container {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+#destaques-container > div {
+    min-width: 100%;
+}
+
+.destaque-navigation-button {
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.destaque-navigation-button:hover {
+    opacity: 1;
+}
+
+
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff69b4;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(151, 21, 21, 0.1);
+    transition: all 0.2s ease;
+}
+
+.close-button:hover {
+    background-color: #ff4da6;
+    transform: scale(1.1);
+}
+
+.close-button:active {
+    transform: scale(0.95);
+}
+
+
+h3 {
+    width: 50%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* =========================================
+   AJUSTES DE RESPONSIVIDADE - ATUALIZAÇÃO
+   ========================================= */
+
+/* Remove a regra antiga de h3 que estava quebrando layout */
+h3 {
+    width: auto !important;
+    margin: 0 !important;
+    text-align: left !important;
+}
+
+/* Menu mobile - estilo dos links */
+.mobile-nav-link {
+    display: flex;
+    align-items: center;
+}
+
+/* Search container responsivo */
+.search-container {
+    max-width: 200px;
+}
+
+@media (max-width: 640px) {
+    .search-container {
+        max-width: 100%;
+        width: 100%;
+        border-radius: 12px;
+    }
+
+    .search-input {
+        font-size: 14px;
+        padding: 8px 10px;
+    }
+}
+
+/* Cards de produto menores e responsivos */
+#produtos-container .bg-white,
+#ofertas-container .bg-white {
+    border-radius: 12px;
+}
+
+/* Carrinho fullscreen em mobile */
+@media (max-width: 640px) {
+    #carrinho {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* Botões de categoria responsivos */
+.category-btn {
+    font-size: 12px;
+    padding: 0.4rem 0.9rem;
+    white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+    .category-btn {
+        font-size: 14px;
+        padding: 0.5rem 1.25rem;
+    }
+}
+
+/* Overflow horizontal nas categorias em mobile */
+#categorias-buttons > div {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+}
+
+#categorias-buttons > div::-webkit-scrollbar {
+    display: none;
+}
+
+/* Subcategory dropdown — dimensões base (posição definida inline via JS) */
+.subcategories-dropdown {
+    min-width: 180px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+/* Menu mobile animação suave */
+#mobile-menu {
+    transition: max-height 0.3s ease, opacity 0.2s ease;
+}
+
+/* Ícones do hambúrguer com transição */
+#icon-hamburger, #icon-close {
+    transition: opacity 0.2s ease;
+}

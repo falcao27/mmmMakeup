@@ -1,0 +1,486 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menina Moça Makeup</title>
+    <link rel="icon" href="assets/android-chrome-192x192.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-50 font-[Poppins]">
+
+    <!-- Header Fixo -->
+    <header class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-sm">
+        <div class="header-shell mx-auto px-4 relative">
+            <div class="flex items-center justify-between h-16 gap-4">
+
+                <!-- Logo -->
+                <h1 class="site-logo text-2xl sm:text-3xl font-dancing text-pink-500 font-bold flex-shrink-0">Menina Moça</h1>
+
+                <!-- Menu Desktop Central -->
+                <nav class="hidden md:flex gap-5 items-center justify-center flex-1 min-w-0">
+                    <a href="#inicio" class="text-gray-600 hover:text-pink-500 transition-colors text-sm">Início</a>
+                    <a href="#produtos" class="text-gray-600 hover:text-pink-500 transition-colors text-sm">Produtos</a>
+                    <a href="#promocoes" class="text-gray-600 hover:text-pink-500 transition-colors text-sm">Promoções</a>
+                    <a href="#Sobre" class="text-gray-600 hover:text-pink-500 transition-colors text-sm">Sobre</a>
+                    <div class="flex items-center space-x-3 ml-2">
+                        <!-- Instagram -->
+                        <a href="https://instagram.com/meninamocamakeup_" target="_blank" class="text-gray-600 hover:text-pink-500 transition-colors">
+                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                        <!-- WhatsApp -->
+                        <a href="https://wa.me/5585988740788" target="_blank" class="text-gray-600 hover:text-pink-500 transition-colors">
+                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </nav>
+
+                <!-- Direita: Busca + Carrinho + Menu -->
+                <div class="header-actions flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+                    <!-- Campo de busca desktop -->
+                    <div class="search-container header-search hidden sm:flex">
+                        <input
+                            type="text"
+                            id="search-input"
+                            placeholder="Nome do Produto"
+                            class="search-input"
+                            oninput="handleSearchInput()"
+                        />
+                        <button
+                            id="search-button"
+                            class="search-button hidden"
+                            onclick="filterProductsBySearchTerm(document.getElementById('search-input').value)"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M16.5 10.5A6 6 0 1110.5 4.5a6 6 0 016 6z" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Ícone busca mobile -->
+                    <button id="mobile-search-toggle" class="sm:hidden p-2 text-gray-600 hover:text-pink-500 transition-colors" aria-label="Buscar">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M16.5 10.5A6 6 0 1110.5 4.5a6 6 0 016 6z" />
+                        </svg>
+                    </button>
+
+                    <!-- Botão Login/Usuário -->
+                    <div id="auth-btn-container" class="flex items-center flex-shrink-0">
+                        <!-- Estado: nÃ£o logado -->
+                        <a id="btn-login-header" href="login.html"
+                           class="hidden items-center gap-1.5 text-sm text-gray-600 hover:text-pink-500 transition-colors px-3 py-1.5 rounded-lg hover:bg-pink-50">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                            <span class="hidden sm:inline">Entrar</span>
+                        </a>
+                        <!-- Estado: logado -->
+                        <div id="btn-usuario-header" class="hidden relative">
+                            <button onclick="toggleMenuUsuario()"
+                                    class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-pink-500 transition-colors px-2 py-1.5 rounded-lg hover:bg-pink-50">
+                                <div class="w-7 h-7 rounded-full bg-pink-500 flex items-center justify-center text-white text-xs font-bold" id="avatar-inicial">?</div>
+                                <span class="hidden lg:inline max-w-[96px] truncate" id="header-nome-usuario"></span>
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <div id="menu-usuario" class="hidden absolute right-0 top-10 bg-white rounded-xl shadow-lg border border-gray-100 w-48 py-2 z-50">
+                                <div class="px-4 py-2 border-b border-gray-100">
+                                    <p class="text-xs text-gray-400">Logado como</p>
+                                    <p class="text-sm font-medium text-gray-700 truncate" id="menu-email-usuario"></p>
+                                </div>
+                                <button onclick="fazerLogout()"
+                                        class="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                    </svg>
+                                    Sair da conta
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Carrinho -->
+                    <button onclick="toggleCarrinho()" data-open-cart class="relative p-2 rounded-lg hover:bg-pink-50 transition-colors flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700 hover:text-pink-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                        </svg>
+                        <span id="carrinho-badge" class="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+                    </button>
+
+                    <!-- Botão Hambúrguer (visÃ­vel apenas em mobile) -->
+                    <button id="mobile-menu-toggle"
+                        class="flex md:hidden p-2 rounded-lg text-gray-600 hover:bg-pink-50 focus:outline-none focus:ring-2 focus:ring-pink-400 transition-colors"
+                        aria-label="Abrir menu">
+                        <svg id="icon-hamburger" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg id="icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Barra de busca mobile expansÃ­vel -->
+            <div id="mobile-search-bar" class="hidden sm:hidden pb-3">
+                <div class="search-container w-full">
+                    <input
+                        type="text"
+                        id="search-input-mobile"
+                        placeholder="Buscar produto..."
+                        class="search-input w-full"
+                        oninput="handleSearchInputMobile()"
+                    />
+                    <button
+                        id="search-button-mobile"
+                        class="search-button hidden"
+                        onclick="filterProductsBySearchTerm(document.getElementById('search-input-mobile').value)"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M16.5 10.5A6 6 0 1110.5 4.5a6 6 0 016 6z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Mobile Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-pink-100 shadow-lg">
+            <div class="px-5 py-4 space-y-1">
+                <a href="#inicio" class="mobile-nav-link flex items-center gap-3 py-3 px-3 rounded-xl text-gray-700 hover:text-pink-500 hover:bg-pink-50 transition-all font-medium">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Início
+                </a>
+                <a href="#produtos" class="mobile-nav-link flex items-center gap-3 py-3 px-3 rounded-xl text-gray-700 hover:text-pink-500 hover:bg-pink-50 transition-all font-medium">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                    </svg>
+                    Produtos
+                </a>
+                <a href="#promocoes" class="mobile-nav-link flex items-center gap-3 py-3 px-3 rounded-xl text-gray-700 hover:text-pink-500 hover:bg-pink-50 transition-all font-medium">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/>
+                    </svg>
+                    Promoções
+                </a>
+                <a href="#Sobre" class="mobile-nav-link flex items-center gap-3 py-3 px-3 rounded-xl text-gray-700 hover:text-pink-500 hover:bg-pink-50 transition-all font-medium">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Sobre
+                </a>
+
+                <!-- Auth no menu mobile -->
+                <div id="mobile-auth-logado" class="hidden border-t border-gray-100 pt-2">
+                    <div class="px-3 py-2 flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full bg-pink-500 flex items-center justify-center text-white text-sm font-bold" id="mobile-avatar-inicial">?</div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-700" id="mobile-nome-usuario"></p>
+                            <button onclick="fazerLogout()" class="text-xs text-red-400 hover:text-red-600">Sair da conta</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="mobile-auth-deslogado" class="hidden border-t border-gray-100 pt-2">
+                    <a href="login.html" class="mobile-nav-link flex items-center gap-3 py-3 px-3 rounded-xl text-pink-500 hover:bg-pink-50 transition-all font-medium">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                        </svg>
+                        Entrar / Criar Conta
+                    </a>
+                </div>
+
+                <div class="border-t border-gray-100 my-2 pt-2">
+                    <p class="text-xs text-gray-400 px-3 mb-2 uppercase tracking-wide font-medium">Redes Sociais</p>
+                    <div class="flex gap-3 px-3">
+                        <a href="https://instagram.com/meninamocamakeup_" target="_blank"
+                           class="flex items-center gap-2 text-gray-600 hover:text-pink-500 transition-colors bg-gray-50 hover:bg-pink-50 px-4 py-2 rounded-xl text-sm font-medium flex-1 justify-center">
+                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                            Instagram
+                        </a>
+                        <a href="https://wa.me/5585988740788" target="_blank"
+                           class="flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors bg-gray-50 hover:bg-green-50 px-4 py-2 rounded-xl text-sm font-medium flex-1 justify-center">
+                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                            </svg>
+                            WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section com Slider -->
+    <section id="inicio" class="pt-16">
+        <div class="relative h-[360px] sm:h-[500px] md:h-[600px] overflow-hidden">
+            <div id="slider" class="flex transition-transform duration-500 h-full">
+                <div class="w-full flex-shrink-0">
+                    <img src="assets/Batton.jpg" alt="Batton" class="w-full h-full object-cover">
+                </div>
+                <div class="w-full flex-shrink-0">
+                    <img src="assets/Paleta.jpg" alt="Paleta" class="w-full h-full object-cover">
+                </div>
+                <div class="w-full flex-shrink-0">
+                    <img src="assets/Pincel.jpg" alt="Pincel" class="w-full h-full object-cover">
+                </div>
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent flex items-center">
+                <div class="container mx-auto px-4">
+                    <div class="max-w-xl text-white">
+                        <h2 class="text-3xl sm:text-5xl font-bold mb-3 sm:mb-4">Realce Sua Beleza Natural</h2>
+                        <p class="text-sm sm:text-lg mb-6 sm:mb-8">Descubra nossa coleÃ§Ã£o exclusiva de produtos de beleza</p>
+                        <a href="#destaques"
+                           class="bg-pink-500 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full hover:bg-pink-600 transition-colors inline-block text-sm sm:text-base">
+                            Ver Destaques
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SeÃ§Ã£o de Categorias e Produtos -->
+    <section id="produtos" class="py-10 sm:py-16 bg-gray-50">
+        <div class="container mx-auto px-3 sm:px-4">
+            <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8">Nossos Produtos</h2>
+
+            <div id="error-message" class="fixed top-4 right-4 bg-red-500 text-white p-4 rounded-lg hidden"></div>
+
+            <!-- Categorias -->
+            <div id="categorias-buttons"></div>
+
+            <!-- Grid de Produtos: 2 colunas mobile, 3 colunas desktop -->
+            <div id="produtos-container" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                <!-- Produtos inseridos dinamicamente -->
+            </div>
+        </div>
+    </section>
+
+    <!-- SeÃ§Ã£o de Destaques -->
+    <section id="destaques" class="py-16 bg-gradient-to-br from-pink-500 to-black">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12 text-white">Destaques</h2>
+            <div class="relative max-w-4xl mx-auto">
+                <div class="overflow-hidden rounded-2xl">
+                    <div id="destaques-container" class="flex transition-all duration-500 ease-out">
+                        <!-- Produtos em destaque inseridos aqui -->
+                    </div>
+                </div>
+                <button id="prev-destaque" onclick="prevDestaque()"
+                        class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 sm:-translate-x-6 z-10
+                               bg-white/80 p-2 sm:p-3 rounded-full shadow-lg hover:bg-pink-500 hover:text-white
+                               transition-all duration-300 backdrop-blur-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <button id="next-destaque" onclick="nextDestaque()"
+                        class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 sm:translate-x-6 z-10
+                               bg-white/80 p-2 sm:p-3 rounded-full shadow-lg hover:bg-pink-500 hover:text-white
+                               transition-all duration-300 backdrop-blur-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SeÃ§Ã£o de Promoções -->
+    <section id="promocoes" class="py-16 bg-gradient-to-r from-pink-500 to-transparent text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-8">Ofertas Especiais</h2>
+            <div id="ofertas-container" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+                <!-- Os produtos em promoÃ§Ã£o serÃ£o inseridos aqui -->
+            </div>
+        </div>
+    </section>
+
+    <!-- SeÃ§Ã£o Sobre NÃ³s -->
+    <section id="Sobre" class="bg-pink-50 py-16 mt-8 sm:mt-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="rounded-lg overflow-hidden shadow-lg">
+                    <img src="assets/sobre.jpg" alt="Sobre Menina Moça" class="w-full h-full object-cover">
+                </div>
+                <div class="space-y-4">
+                    <h2 class="text-3xl font-bold text-pink-600">Nossa HistÃ³ria</h2>
+                    <p class="text-gray-700 leading-relaxed">
+                        Oi, me chamo Jamile Lima, sou a criadora da Menina Moça.
+                        A Menina Moça nasceu no ano de 2018 com o sonho de trazer beleza e autoestima para todas as mulheres.
+                        Nossos produtos sÃ£o cuidadosamente selecionados para proporcionar a melhor experiÃªncia para vocÃª,
+                        e tambÃ©m contamos com um atendimento personalizado para oferecer as melhores opÃ§Ãµes em maquiagens e cosmÃ©ticos.
+                    </p>
+                    <p class="text-gray-700 leading-relaxed">
+                        Nossa missÃ£o Ã© fazer com que cada cliente se sinta especial e confiante,
+                        proporcionando uma experiÃªncia Ãºnica de compra e atendimento de qualidade.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-pink-600 text-white py-8 mt-16">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 Menina Moça. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Carrinho Sidebar -->
+    <div id="carrinho" class="fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-2xl
+                             transform translate-x-full transition-transform duration-300 z-50">
+        <div class="flex flex-col h-full">
+            <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                <h2 class="text-xl font-semibold">Seu Carrinho</h2>
+                <button onclick="toggleCarrinho()" data-close-cart class="text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="carrinho-items" class="flex-1 overflow-y-auto"></div>
+            <div class="p-4 border-t border-gray-100">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-lg font-semibold">Total:</span>
+                    <span id="carrinho-total" class="text-xl font-bold text-pink-500">R$ 0,00</span>
+                </div>
+                <button onclick="finalizarCompra()"
+                        class="w-full bg-pink-500 text-white py-3 rounded-lg hover:bg-pink-600 transition-colors">
+                    Finalizar Compra
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container para os botÃµes de categoria -->
+    <div id="categorias-container" class="flex flex-wrap gap-2 mb-8 px-4 md:px-0"></div>
+
+    <!-- Modal de Detalhes do Produto -->
+    <div id="modal-produto" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto mx-4">
+            <div class="relative p-2" id="modal-content">
+                <!-- ConteÃºdo serÃ¡ inserido dinamicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Login necessÃ¡rio para finalizar compra -->
+    <div id="modal-login-required" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100]">
+        <div class="bg-white rounded-2xl max-w-sm w-full mx-4 p-8 text-center shadow-2xl">
+            <div class="w-16 h-16 rounded-full bg-pink-100 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">FaÃ§a login para continuar</h3>
+            <p class="text-sm text-gray-500 mb-6">Para finalizar sua compra, vocÃª precisa estar logado na sua conta.</p>
+            <div class="flex flex-col gap-3">
+                <a href="login.html?redirect=index.html"
+                   class="bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-xl font-semibold text-sm transition-colors">
+                    Entrar / Criar Conta
+                </a>
+                <button onclick="fecharModalLoginRequired()"
+                        class="text-sm text-gray-400 hover:text-gray-600 transition-colors py-2">
+                    Continuar comprando
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+    <script type="module">
+        import { getUsuarioAtual, logout, onAuthChange } from './auth.js';
+
+        // Atualizar UI de acordo com o estado de autenticaÃ§Ã£o
+        async function atualizarAuthUI() {
+            const user = await getUsuarioAtual();
+            const btnLogin    = document.getElementById('btn-login-header');
+            const btnUsuario  = document.getElementById('btn-usuario-header');
+            const mobileLogado    = document.getElementById('mobile-auth-logado');
+            const mobileDeslogado = document.getElementById('mobile-auth-deslogado');
+
+            if (user) {
+                const inicial = (user.nome || user.email || 'U')[0].toUpperCase();
+                const nome    = user.nome || user.email.split('@')[0];
+
+                // Header desktop
+                btnLogin.classList.add('hidden');
+                btnUsuario.classList.remove('hidden');
+                btnUsuario.classList.add('flex');
+                document.getElementById('avatar-inicial').textContent   = inicial;
+                document.getElementById('header-nome-usuario').textContent = nome;
+                document.getElementById('menu-email-usuario').textContent  = user.email;
+
+                // Menu mobile
+                mobileLogado.classList.remove('hidden');
+                mobileDeslogado.classList.add('hidden');
+                document.getElementById('mobile-avatar-inicial').textContent = inicial;
+                document.getElementById('mobile-nome-usuario').textContent   = nome;
+            } else {
+                btnLogin.classList.remove('hidden');
+                btnLogin.classList.add('flex');
+                btnUsuario.classList.add('hidden');
+                mobileLogado.classList.add('hidden');
+                mobileDeslogado.classList.remove('hidden');
+            }
+        }
+
+        // Ouvir mudanÃ§as de auth
+        onAuthChange(() => atualizarAuthUI());
+        atualizarAuthUI();
+
+        // Toggle do menu de usuÃ¡rio
+        window.toggleMenuUsuario = function() {
+            document.getElementById('menu-usuario').classList.toggle('hidden');
+        };
+
+        // Fechar menu ao clicar fora
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('menu-usuario');
+            const btn  = document.getElementById('btn-usuario-header');
+            if (!btn.contains(e.target)) menu.classList.add('hidden');
+        });
+
+        // Logout
+        window.fazerLogout = async function() {
+            await logout();
+            atualizarAuthUI();
+        };
+
+        // Modal login required
+        window.mostrarModalLoginRequired = function() {
+            const modal = document.getElementById('modal-login-required');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+        window.fecharModalLoginRequired = function() {
+            const modal = document.getElementById('modal-login-required');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        // Verificar auth ao tentar finalizar compra
+        window.verificarAuthParaCheckout = async function() {
+            const user = await getUsuarioAtual();
+            return !!user;
+        };
+    </script>
+</body>
+</html>

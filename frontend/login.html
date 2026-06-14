@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar | Menina Moça Makeup</title>
+    <link rel="icon" href="assets/android-chrome-192x192.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .font-dancing { font-family: 'Dancing Script', cursive; }
+
+        .tab-active {
+            border-bottom: 3px solid #ec4899;
+            color: #ec4899;
+            font-weight: 600;
+        }
+        .input-field {
+            width: 100%;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-field:focus { border-color: #ec4899; box-shadow: 0 0 0 3px rgba(236,72,153,0.1); }
+        .btn-pink {
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            color: white;
+            padding: 0.85rem;
+            border-radius: 0.75rem;
+            width: 100%;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: opacity 0.2s, transform 0.1s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-pink:hover { opacity: 0.93; transform: translateY(-1px); }
+        .btn-pink:active { transform: translateY(0); }
+        .btn-pink:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .alert {
+            padding: 0.85rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            display: none;
+        }
+        .alert.show { display: block; }
+        .alert-error { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+        .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+
+        .bg-pattern {
+            background: linear-gradient(135deg, #fdf2f8 0%, #fff7f9 50%, #fce7f3 100%);
+            min-height: 100vh;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 60px rgba(236,72,153,0.12);
+            overflow: hidden;
+        }
+
+        .eye-btn {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+        .eye-btn:hover { color: #ec4899; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeIn 0.3s ease; }
+    </style>
+</head>
+<body class="bg-pattern flex flex-col min-h-screen">
+
+    <!-- Header simples -->
+    <header class="py-5 px-6">
+        <a href="index.html" class="inline-flex items-center gap-2 text-gray-500 hover:text-pink-500 transition-colors text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Voltar à loja
+        </a>
+    </header>
+
+    <!-- Conteúdo central -->
+    <main class="flex-1 flex items-center justify-center px-4 py-8">
+        <div class="w-full max-w-md">
+
+            <!-- Logo -->
+            <div class="text-center mb-8">
+                <h1 class="font-dancing text-4xl text-pink-500 font-bold">Menina Moça</h1>
+                <p class="text-gray-400 text-sm mt-1">Sua loja de beleza favorita</p>
+            </div>
+
+            <!-- Card principal -->
+            <div class="card fade-in">
+
+                <!-- Tabs: Login / Cadastrar -->
+                <div class="flex border-b border-gray-100">
+                    <button id="tab-login"
+                            onclick="mostrarTab('login')"
+                            class="tab-active flex-1 py-4 text-sm text-center transition-colors">
+                        Entrar
+                    </button>
+                    <button id="tab-cadastro"
+                            onclick="mostrarTab('cadastro')"
+                            class="flex-1 py-4 text-sm text-center text-gray-400 hover:text-pink-400 transition-colors">
+                        Criar Conta
+                    </button>
+                </div>
+
+                <div class="p-8">
+
+                    <!-- Alerta de mensagem -->
+                    <div id="alerta" class="alert mb-5"></div>
+
+                    <!-- ─── FORMULÁRIO LOGIN ─── -->
+                    <form id="form-login" onsubmit="handleLogin(event)">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">E-mail</label>
+                                <input type="email" id="login-email" class="input-field"
+                                       placeholder="seu@email.com" required autocomplete="email">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Senha</label>
+                                <div class="relative">
+                                    <input type="password" id="login-senha" class="input-field pr-10"
+                                           placeholder="••••••••" required autocomplete="current-password">
+                                    <button type="button" class="eye-btn" onclick="toggleSenha('login-senha', this)">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="button" onclick="mostrarRecuperarSenha()"
+                                        class="text-sm text-pink-500 hover:text-pink-700 transition-colors">
+                                    Esqueci minha senha
+                                </button>
+                            </div>
+
+                            <button type="submit" id="btn-login" class="btn-pink mt-2">
+                                Entrar
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- ─── FORMULÁRIO CADASTRO ─── -->
+                    <form id="form-cadastro" class="hidden" onsubmit="handleCadastro(event)">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Nome completo</label>
+                                <input type="text" id="cad-nome" class="input-field"
+                                       placeholder="Seu nome" required autocomplete="name">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">E-mail</label>
+                                <input type="email" id="cad-email" class="input-field"
+                                       placeholder="seu@email.com" required autocomplete="email">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Telefone <span class="text-gray-400 font-normal">(opcional)</span></label>
+                                <input type="tel" id="cad-telefone" class="input-field"
+                                       placeholder="(85) 99999-9999" autocomplete="tel">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Senha</label>
+                                <div class="relative">
+                                    <input type="password" id="cad-senha" class="input-field pr-10"
+                                           placeholder="Mínimo 6 caracteres" required minlength="6" autocomplete="new-password">
+                                    <button type="button" class="eye-btn" onclick="toggleSenha('cad-senha', this)">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">Confirmar senha</label>
+                                <div class="relative">
+                                    <input type="password" id="cad-confirmar" class="input-field pr-10"
+                                           placeholder="Repita a senha" required autocomplete="new-password">
+                                    <button type="button" class="eye-btn" onclick="toggleSenha('cad-confirmar', this)">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="submit" id="btn-cadastro" class="btn-pink mt-2">
+                                Criar minha conta
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- ─── FORMULÁRIO RECUPERAR SENHA ─── -->
+                    <form id="form-recuperar" class="hidden" onsubmit="handleRecuperar(event)">
+                        <div class="mb-5">
+                            <button type="button" onclick="mostrarTab('login')"
+                                    class="flex items-center gap-1.5 text-sm text-gray-400 hover:text-pink-500 transition-colors mb-4">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                </svg>
+                                Voltar ao login
+                            </button>
+                            <h3 class="font-semibold text-gray-700 text-lg mb-1">Recuperar senha</h3>
+                            <p class="text-sm text-gray-400">Informe seu e-mail e enviaremos um link para redefinir sua senha.</p>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">E-mail cadastrado</label>
+                                <input type="email" id="recuperar-email" class="input-field"
+                                       placeholder="seu@email.com" required>
+                            </div>
+                            <button type="submit" id="btn-recuperar" class="btn-pink">
+                                Enviar link de recuperação
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+            <!-- Rodapé do card -->
+            <p class="text-center text-xs text-gray-400 mt-6">
+                &copy; 2025 Menina Moça. Todos os direitos reservados.
+            </p>
+        </div>
+    </main>
+
+    <script type="module">
+        import { login, registrar, recuperarSenha, getUsuarioAtual } from './auth.js';
+
+        // Verificar se já está logado
+        (async () => {
+            const user = await getUsuarioAtual();
+            if (user) {
+                const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
+                window.location.href = redirectUrl;
+            }
+        })();
+
+        // ── Mostrar/ocultar tab ────────────────────────────────────
+        window.mostrarTab = function(tab) {
+            const formLogin    = document.getElementById('form-login');
+            const formCadastro = document.getElementById('form-cadastro');
+            const formRecuperar = document.getElementById('form-recuperar');
+            const tabLogin     = document.getElementById('tab-login');
+            const tabCadastro  = document.getElementById('tab-cadastro');
+
+            limparAlerta();
+            formLogin.classList.add('hidden');
+            formCadastro.classList.add('hidden');
+            formRecuperar.classList.add('hidden');
+            tabLogin.classList.remove('tab-active');
+            tabCadastro.classList.remove('tab-active');
+
+            if (tab === 'login') {
+                formLogin.classList.remove('hidden');
+                tabLogin.classList.add('tab-active');
+            } else if (tab === 'cadastro') {
+                formCadastro.classList.remove('hidden');
+                tabCadastro.classList.add('tab-active');
+            }
+        };
+
+        window.mostrarRecuperarSenha = function() {
+            document.getElementById('form-login').classList.add('hidden');
+            document.getElementById('form-cadastro').classList.add('hidden');
+            document.getElementById('form-recuperar').classList.remove('hidden');
+            document.getElementById('tab-login').classList.remove('tab-active');
+            document.getElementById('tab-cadastro').classList.remove('tab-active');
+            limparAlerta();
+        };
+
+        // ── Toggle visibilidade senha ──────────────────────────────
+        window.toggleSenha = function(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML = `
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                    </svg>`;
+            } else {
+                input.type = 'password';
+                btn.innerHTML = `
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>`;
+            }
+        };
+
+        // ── Alertas ────────────────────────────────────────────────
+        function mostrarErro(msg) {
+            const el = document.getElementById('alerta');
+            el.textContent = msg;
+            el.className = 'alert alert-error show';
+        }
+        function mostrarSucesso(msg) {
+            const el = document.getElementById('alerta');
+            el.textContent = msg;
+            el.className = 'alert alert-success show';
+        }
+        function limparAlerta() {
+            const el = document.getElementById('alerta');
+            el.className = 'alert';
+        }
+
+        function setCarregando(btnId, carregando, textoOriginal) {
+            const btn = document.getElementById(btnId);
+            btn.disabled = carregando;
+            btn.textContent = carregando ? 'Aguarde...' : textoOriginal;
+        }
+
+        // ── Handler Login ──────────────────────────────────────────
+        window.handleLogin = async function(e) {
+            e.preventDefault();
+            limparAlerta();
+            setCarregando('btn-login', true, 'Entrar');
+
+            try {
+                const email = document.getElementById('login-email').value.trim();
+                const senha = document.getElementById('login-senha').value;
+
+                await login({ email, senha });
+
+                mostrarSucesso('Login realizado! Redirecionando...');
+                setTimeout(() => {
+                    const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'index.html';
+                    window.location.href = redirectUrl;
+                }, 1000);
+            } catch (err) {
+                const mensagens = {
+                    'Invalid login credentials': 'E-mail ou senha incorretos.',
+                    'Email not confirmed': 'Confirme seu e-mail antes de entrar. Verifique sua caixa de entrada.',
+                    'Too many requests': 'Muitas tentativas. Tente novamente em alguns minutos.',
+                };
+                mostrarErro(mensagens[err.message] || `Erro: ${err.message}`);
+            } finally {
+                setCarregando('btn-login', false, 'Entrar');
+            }
+        };
+
+        // ── Handler Cadastro ───────────────────────────────────────
+        window.handleCadastro = async function(e) {
+            e.preventDefault();
+            limparAlerta();
+
+            const nome      = document.getElementById('cad-nome').value.trim();
+            const email     = document.getElementById('cad-email').value.trim();
+            const telefone  = document.getElementById('cad-telefone').value.trim();
+            const senha     = document.getElementById('cad-senha').value;
+            const confirmar = document.getElementById('cad-confirmar').value;
+
+            if (senha !== confirmar) {
+                mostrarErro('As senhas não coincidem. Verifique e tente novamente.');
+                return;
+            }
+
+            setCarregando('btn-cadastro', true, 'Criar minha conta');
+
+            try {
+                await registrar({ nome, email, senha, telefone });
+                mostrarSucesso('Conta criada! Verifique seu e-mail para confirmar o cadastro. Após confirmar, faça login.');
+                document.getElementById('form-cadastro').reset();
+            } catch (err) {
+                const mensagens = {
+                    'User already registered': 'Este e-mail já está cadastrado. Faça login ou recupere sua senha.',
+                    'Password should be at least 6 characters': 'A senha deve ter no mínimo 6 caracteres.',
+                };
+                mostrarErro(mensagens[err.message] || `Erro: ${err.message}`);
+            } finally {
+                setCarregando('btn-cadastro', false, 'Criar minha conta');
+            }
+        };
+
+        // ── Handler Recuperar Senha ────────────────────────────────
+        window.handleRecuperar = async function(e) {
+            e.preventDefault();
+            limparAlerta();
+            setCarregando('btn-recuperar', true, 'Enviar link de recuperação');
+
+            try {
+                const email = document.getElementById('recuperar-email').value.trim();
+                await recuperarSenha(email);
+                mostrarSucesso('Link enviado! Verifique sua caixa de entrada (e spam) para redefinir a senha.');
+                document.getElementById('form-recuperar').reset();
+            } catch (err) {
+                mostrarErro(`Erro ao enviar e-mail: ${err.message}`);
+            } finally {
+                setCarregando('btn-recuperar', false, 'Enviar link de recuperação');
+            }
+        };
+    </script>
+</body>
+</html>

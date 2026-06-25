@@ -94,10 +94,10 @@ async function criarAdmin() {
     console.log('\n🎉 Admin criado com sucesso!');
     console.log('─'.repeat(50));
     console.log(`📧 Email : ${email}`);
-    console.log(`🔑 Senha : ${password}`);
+    console.log('🔑 Senha : [nao exibida por seguranca]');
     console.log(`🌐 Painel: http://localhost:${process.env.PORT || 3000}/admin.html`);
     console.log('─'.repeat(50));
-    console.log('\n⚠️  Guarde essas credenciais em local seguro!\n');
+    console.log('\n⚠️  Guarde a senha apenas em um gerenciador seguro.\n');
 }
 
 criarAdmin().catch(err => {

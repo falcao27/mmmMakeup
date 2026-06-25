@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <style>
         * { font-family: 'Poppins', sans-serif; }
         .font-dancing { font-family: 'Dancing Script', cursive; }
@@ -106,11 +105,6 @@
         /* ── Labels ── */
         .lbl { display:block; font-size:.72rem; font-weight:600; color:#64748b; margin-bottom:.35rem; }
 
-        /* ── Scanner ── */
-        #scanner-container { width: 100%; }
-        #html5-qrcode-button-camera-permission,
-        #html5-qrcode-button-camera-stop { display:none !important; }
-
         /* ── Estoque nível ── */
         .estoque-ok   { color:#16a34a; font-weight:600; }
         .estoque-low  { color:#d97706; font-weight:600; }
@@ -123,7 +117,78 @@
         .tab-btn { padding:.4rem .9rem; border-radius:.45rem; font-size:.78rem; font-weight:500; cursor:pointer; border:1.5px solid #e2e8f0; background:white; color:#64748b; transition:all .15s; }
         .tab-btn.active { background:#ec4899; color:white; border-color:#ec4899; }
 
+        .mobile-list { display: grid; gap: .5rem; }
+        .mobile-card {
+            background: #fff;
+            border: 1px solid #e8eef5;
+            border-radius: .7rem;
+            padding: .58rem .65rem;
+            box-shadow: 0 4px 10px rgba(15,23,42,.04);
+        }
+        .product-mobile-card {
+            padding: .5rem .58rem;
+            border-radius: .62rem;
+            box-shadow: 0 3px 8px rgba(15,23,42,.035);
+        }
+        .mobile-card-head { display:flex; align-items:center; gap:.55rem; min-width:0; }
+        .mobile-card-title { font-size:.8rem; font-weight:700; color:#1e293b; line-height:1.18; word-break:break-word; }
+        .mobile-card-sub { font-size:.64rem; color:#64748b; margin-top:.06rem; word-break:break-word; }
+        .mobile-card-thumb { width: 40px; height: 40px; border-radius: .65rem; object-fit: cover; flex-shrink: 0; }
+        .product-mobile-card .mobile-card-thumb { width: 38px; height: 38px; border-radius: .55rem; }
+        .product-mobile-card .mobile-card-title { font-size: .76rem; line-height: 1.15; }
+        .product-mobile-card .mobile-card-sub { font-size: .6rem; }
+        .product-mobile-card .mobile-card-summary { margin-top: .42rem; padding-top: .42rem; }
+        .mobile-card-icon { width: 36px; height: 36px; border-radius: .65rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .mobile-card-summary {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:.5rem;
+            margin-top:.5rem;
+            padding-top:.5rem;
+            border-top:1px solid #f1f5f9;
+            font-size:.7rem;
+            color:#64748b;
+        }
+        .mobile-expand { margin-top:.5rem; }
+        .mobile-expand summary {
+            list-style:none;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            min-height:30px;
+            border-radius:.55rem;
+            background:#f8fafc;
+            border:1px solid #e2e8f0;
+            color:#475569;
+            font-size:.7rem;
+            font-weight:700;
+        }
+        .mobile-expand summary::-webkit-details-marker { display:none; }
+        .mobile-expand summary::after { content:'+'; margin-left:.35rem; color:#94a3b8; font-weight:800; font-size:.9rem; line-height:1; }
+        .mobile-expand[open] summary::after { content:'-'; }
+        .mobile-meta {
+            display:grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap:.4rem;
+            margin-top:.5rem;
+        }
+        .mobile-meta-item {
+            background:#f8fafc;
+            border:1px solid #eef2f7;
+            border-radius:.55rem;
+            padding:.42rem .5rem;
+            min-width:0;
+        }
+        .mobile-meta-label { display:block; font-size:.57rem; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.04em; }
+        .mobile-meta-value { display:block; margin-top:.08rem; font-size:.7rem; font-weight:600; color:#334155; overflow:hidden; text-overflow:ellipsis; }
+        .mobile-actions { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:.4rem; margin-top:.5rem; }
+        .mobile-actions .btn, .mobile-actions select { width:100%; justify-content:center; }
+
         /* Responsividade do painel admin */
+        .mobile-topbar,
+        .mobile-menu-backdrop { display: none; }
         main { transition: margin .2s ease, padding .2s ease; }
         .tbl-wrap { -webkit-overflow-scrolling: touch; }
         .tbl-wrap table { min-width: 760px; }
@@ -135,23 +200,99 @@
         }
 
         @media (max-width: 820px) {
-            body { background: #f8fafc; }
+            body { background: #eef4f8; }
             #app { min-height: 100vh; }
 
-            .sidebar {
+            .mobile-topbar {
+                display: flex;
                 position: sticky;
                 top: 0;
-                width: 100%;
-                min-height: auto;
-                max-height: none;
-                overflow: visible;
-                padding: .85rem .9rem !important;
-                border-radius: 0;
-                z-index: 60;
+                z-index: 70;
+                min-height: 72px;
+                align-items: center;
+                justify-content: space-between;
+                gap: .8rem;
+                padding: .8rem 1rem;
+                background: linear-gradient(160deg, #075985 0%, #0e7490 100%);
+                color: white;
+                box-shadow: 0 12px 24px rgba(14, 116, 144, .18);
             }
 
+            .mobile-brand {
+                display: flex;
+                align-items: center;
+                gap: .65rem;
+                min-width: 0;
+            }
+
+            .mobile-brand-icon {
+                width: 36px;
+                height: 36px;
+                border-radius: 999px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(255,255,255,.16);
+                flex-shrink: 0;
+            }
+
+            .mobile-brand-title {
+                font-size: .85rem;
+                font-weight: 700;
+                line-height: 1.1;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .mobile-brand-subtitle {
+                display: block;
+                font-size: .67rem;
+                color: rgba(255,255,255,.72);
+                margin-top: .15rem;
+            }
+
+            .mobile-menu-btn {
+                width: 40px;
+                height: 40px;
+                border-radius: 999px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(255,255,255,.14);
+                color: white;
+                border: 1px solid rgba(255,255,255,.2);
+            }
+
+            .mobile-menu-backdrop {
+                position: fixed;
+                inset: 0;
+                z-index: 55;
+                background: rgba(15, 23, 42, .42);
+            }
+
+            body.admin-menu-open { overflow: hidden; }
+            body.admin-menu-open .mobile-menu-backdrop { display: block; }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: min(82vw, 300px);
+                height: 100vh;
+                min-height: 100vh;
+                overflow-y: auto;
+                padding: 1rem !important;
+                z-index: 80;
+                transform: translateX(-104%);
+                transition: transform .22s ease;
+                box-shadow: 18px 0 36px rgba(15, 23, 42, .28);
+            }
+
+            body.admin-menu-open .sidebar { transform: translateX(0); }
+
             .sidebar > .mb-5 {
-                margin-bottom: .75rem !important;
+                margin-bottom: 1rem !important;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
@@ -164,25 +305,20 @@
                 white-space: nowrap;
             }
 
-            .sidebar > .mb-5 p { display: none; }
-
             .sidebar nav {
-                display: flex;
-                gap: .45rem;
-                overflow-x: auto;
-                padding-bottom: .15rem;
-                scrollbar-width: none;
+                display: block;
+                overflow: visible;
+                padding-bottom: 0;
             }
 
-            .sidebar nav::-webkit-scrollbar { display: none; }
-            .nav-section { display: none; }
+            .nav-section { display: block; }
 
             .nav-item {
-                flex: 0 0 auto;
-                padding: .58rem .75rem;
-                border-radius: .7rem;
-                font-size: .76rem;
-                white-space: nowrap;
+                width: 100%;
+                padding: .72rem .85rem;
+                border-radius: .75rem;
+                font-size: .82rem;
+                white-space: normal;
             }
 
             .nav-item i {
@@ -191,21 +327,11 @@
             }
 
             .sidebar > .border-t {
-                display: flex;
-                align-items: center;
-                gap: .5rem;
                 border-top: 1px solid rgba(255,255,255,.08) !important;
-                margin-top: .65rem !important;
-                padding-top: .65rem !important;
+                margin-top: 1rem !important;
+                padding-top: 1rem !important;
             }
 
-            .sidebar > .border-t > .px-1 {
-                min-width: 0;
-                flex: 1;
-                margin-bottom: 0 !important;
-            }
-
-            .sidebar > .border-t .nav-item { padding: .5rem .65rem; }
             main { margin-left: 0 !important; padding: 1rem !important; }
 
             .page > .flex.items-center.justify-between {
@@ -236,11 +362,28 @@
                 padding: .95rem !important;
             }
 
-            .card { border-radius: .8rem; }
+            .card { border-radius: .75rem; box-shadow: 0 1px 8px rgba(15,23,42,.06); }
             .chart-container { height: 220px; }
-            .card > .flex.items-center.gap-3 { align-items: stretch; }
+            .card > .flex.items-center.gap-3 {
+                align-items: stretch;
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+            .tbl-wrap {
+                overflow-x: visible;
+                margin-left: 0;
+                margin-right: 0;
+            }
+            .tbl-wrap table { min-width: 0; }
             .card .inp { max-width: none !important; }
             .tab-btn, .btn { min-height: 36px; }
+            .page > .flex.items-center.justify-between > .flex,
+            .page > .flex.items-center.justify-between .btn {
+                width: 100%;
+            }
+            .page > .flex.items-center.justify-between .btn {
+                justify-content: center;
+            }
 
             .modal-bg {
                 align-items: flex-start;
@@ -249,27 +392,56 @@
             }
 
             .modal-box {
-                max-height: none;
+                max-height: calc(100dvh - 1.5rem);
                 padding: 1rem;
                 border-radius: .85rem;
+            }
+
+            #modal-crud-form {
+                display: flex;
+                flex-direction: column;
+                max-height: calc(100dvh - 7.5rem);
+            }
+
+            #modal-crud-campos {
+                overflow-y: auto;
+                padding-right: .1rem;
+            }
+
+            #modal-crud-form > .flex.justify-end {
+                position: sticky;
+                bottom: -1rem;
+                background: white;
+                padding-top: .75rem;
+                padding-bottom: .2rem;
+                margin-top: .25rem;
+                border-top: 1px solid #eef2f7;
             }
 
             #modal-crud-campos .grid,
             #modal-venda-conteudo .grid {
                 grid-template-columns: 1fr !important;
             }
+
+            .product-form-grid {
+                gap: .75rem !important;
+            }
+
+            .product-form-grid > div {
+                min-width: 0;
+            }
+
+            .product-form-grid .flex.gap-2 {
+                align-items: stretch;
+            }
+
+            .product-form-grid .btn {
+                white-space: nowrap;
+            }
         }
 
         @media (max-width: 480px) {
-            .sidebar { padding: .75rem !important; }
-            .sidebar > .border-t { flex-wrap: wrap; }
-            .sidebar > .border-t > .px-1 { flex-basis: 100%; }
-
-            .sidebar > .border-t a,
-            .sidebar > .border-t button {
-                flex: 1 1 0;
-                justify-content: center;
-            }
+            .sidebar { padding: .9rem !important; }
 
             main { padding: .8rem !important; }
 
@@ -313,6 +485,7 @@
             table { font-size: .76rem; }
             thead th, tbody td { padding: .58rem .75rem; }
             .btn { justify-content: center; padding: .45rem .7rem; }
+            .modal-box { padding: .9rem; }
         }
     </style>
 </head>
@@ -349,6 +522,20 @@
 
 <!-- ══ APP PRINCIPAL ════════════════════════════════════════════ -->
 <div id="app" class="hidden">
+
+    <header class="mobile-topbar">
+        <div class="mobile-brand">
+            <span class="mobile-brand-icon"><i class="bi bi-stars"></i></span>
+            <div class="min-w-0">
+                <span class="mobile-brand-title">Menina MoÃ§a Admin</span>
+                <span class="mobile-brand-subtitle">Painel de controle</span>
+            </div>
+        </div>
+        <button type="button" id="mobile-admin-menu-btn" class="mobile-menu-btn" aria-label="Abrir menu" aria-expanded="false">
+            <i class="bi bi-list text-xl"></i>
+        </button>
+    </header>
+    <div id="mobile-admin-backdrop" class="mobile-menu-backdrop"></div>
 
     <!-- Sidebar -->
     <aside class="sidebar flex flex-col p-4">
@@ -447,7 +634,7 @@
                 </div>
                 <div class="flex gap-2">
                     <button onclick="abrirModalBarcode()" class="btn btn-outline"><i class="bi bi-upc-scan"></i> Buscar por Código</button>
-                    <button onclick="abrirModal('produto')" class="btn btn-pink"><i class="bi bi-plus-lg"></i> Novo Produto</button>
+                    <button onclick="abrirNovoProduto()" class="btn btn-pink"><i class="bi bi-plus-lg"></i> Novo Produto</button>
                 </div>
             </div>
             <div class="card p-0 overflow-hidden">
@@ -733,24 +920,6 @@
     </div>
 </div>
 
-<!-- Modal Scanner de Código de Barras -->
-<div id="modal-scanner" class="modal-bg hidden">
-    <div class="modal-box" style="max-width:480px">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="modal-title mb-0"><i class="bi bi-upc-scan mr-2 text-pink-500"></i>Leitor de Código de Barras</h3>
-            <button onclick="fecharScanner()" class="text-gray-400 hover:text-gray-600"><i class="bi bi-x-lg"></i></button>
-        </div>
-        <p class="text-xs text-gray-500 mb-3">Aponte a câmera para o código de barras do produto. O código será preenchido automaticamente.</p>
-        <div id="scanner-container" class="rounded-xl overflow-hidden bg-black mb-3" style="min-height:200px"></div>
-        <div id="scanner-resultado" class="hidden bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-800 mb-3"></div>
-        <div class="flex gap-2">
-            <input type="text" id="scanner-manual-input" class="inp" placeholder="Ou digite o código manualmente...">
-            <button onclick="usarCodigoManual()" class="btn btn-pink whitespace-nowrap">Usar</button>
-        </div>
-        <p class="text-xs text-gray-400 mt-2">* Requer permissão de câmera. Funciona com EAN-13, EAN-8, UPC, Code128, etc.</p>
-    </div>
-</div>
-
 <!-- Modal Busca por Código de Barras -->
 <div id="modal-barcode-busca" class="modal-bg hidden">
     <div class="modal-box" style="max-width:480px">
@@ -758,9 +927,9 @@
             <h3 class="modal-title mb-0"><i class="bi bi-upc-scan mr-2 text-pink-500"></i>Buscar por Código de Barras</h3>
             <button onclick="fecharModal('barcode-busca')" class="text-gray-400 hover:text-gray-600"><i class="bi bi-x-lg"></i></button>
         </div>
-        <div id="scanner-busca-container" class="rounded-xl overflow-hidden bg-black mb-3" style="min-height:200px"></div>
+        <p class="text-xs text-gray-500 mb-3">Clique no campo e leia o produto com o leitor de código de barras, ou digite o código manualmente.</p>
         <div class="flex gap-2 mt-3">
-            <input type="text" id="busca-barcode-input" class="inp" placeholder="Ou digite o código...">
+            <input type="text" id="busca-barcode-input" class="inp" placeholder="Leia ou digite o código..." autocomplete="off" inputmode="numeric">
             <button onclick="buscarPorCodigo()" class="btn btn-pink whitespace-nowrap">Buscar</button>
         </div>
         <div id="barcode-busca-resultado" class="mt-3"></div>
@@ -780,8 +949,7 @@ let editando = { tipo: null, id: null };
 let vendaFiltroStatus = '';
 let estoqueNivelFiltro = 'todos';
 let ajusteEstoque = { produtoId: null, estoqueAtual: 0 };
-let scannerCallback = null; // função chamada quando código escaneado
-let html5QrCode = null;
+let codigoBarcodePendente = '';
 let charts = {};
 
 // ══ AUTH ══════════════════════════════════════════════════════
@@ -858,7 +1026,44 @@ window.ir = function(pagina) {
     if (navEl) navEl.classList.add('active');
     if (pagina === 'relatorios') carregarRelatorios();
     if (pagina === 'estoque') carregarEstoque();
+    fecharMenuAdminMobile();
 };
+
+function abrirMenuAdminMobile() {
+    document.body.classList.add('admin-menu-open');
+    document.getElementById('mobile-admin-menu-btn')?.setAttribute('aria-expanded', 'true');
+}
+
+function fecharMenuAdminMobile() {
+    document.body.classList.remove('admin-menu-open');
+    document.getElementById('mobile-admin-menu-btn')?.setAttribute('aria-expanded', 'false');
+}
+
+document.getElementById('mobile-admin-menu-btn')?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    document.body.classList.contains('admin-menu-open') ? fecharMenuAdminMobile() : abrirMenuAdminMobile();
+});
+
+document.getElementById('mobile-admin-backdrop')?.addEventListener('click', fecharMenuAdminMobile);
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') fecharMenuAdminMobile();
+});
+
+document.addEventListener('click', (event) => {
+    if (!document.body.classList.contains('admin-menu-open')) return;
+    if (event.target.closest('.sidebar') || event.target.closest('#mobile-admin-menu-btn')) return;
+    fecharMenuAdminMobile();
+});
+
+let adminResizeTimer = null;
+window.addEventListener('resize', () => {
+    clearTimeout(adminResizeTimer);
+    adminResizeTimer = setTimeout(() => {
+        const ativa = document.querySelector('.page.active')?.id;
+        if (ativa === 'page-produtos') renderProdutos(dados.produtos);
+    }, 160);
+});
 
 // ══ CARREGAR DADOS ═══════════════════════════════════════════
 async function carregarTudo() {
@@ -1049,6 +1254,14 @@ function renderChartPagamento(canvasId, vendas) {
 
 // ══ RENDER TABELAS ═══════════════════════════════════════════
 
+function isMobileAdmin() {
+    return window.matchMedia('(max-width: 1100px)').matches;
+}
+
+function moeda(v) {
+    return `R$ ${Number(v || 0).toFixed(2).replace('.', ',')}`;
+}
+
 function renderProdutos(lista) {
     // Atualiza select de filtro de categoria
     const selectCat = document.getElementById('filtro-cat-produto');
@@ -1059,6 +1272,53 @@ function renderProdutos(lista) {
         });
     }
     document.getElementById('cnt-produto').textContent = `${lista.length} produto(s)`;
+    if (isMobileAdmin()) {
+        document.getElementById('tbl-produtos').innerHTML = lista.length
+            ? `<div class="mobile-list">${lista.map(p => `
+                <article class="mobile-card product-mobile-card">
+                    <div class="mobile-card-head">
+                        <img src="${p.imagem || 'https://placehold.co/40x40/fce7f3/ec4899?text=?'}" class="mobile-card-thumb" onerror="this.src='https://placehold.co/40x40/fce7f3/ec4899?text=?'">
+                        <div class="min-w-0 flex-1">
+                            <h3 class="mobile-card-title">${p.nome || 'Produto sem nome'}</h3>
+                            <p class="mobile-card-sub">${p.codigo_barras || 'Sem codigo'} · ${p.categorias?.nome || 'Sem categoria'}</p>
+                        </div>
+                        <span class="text-[11px] font-bold text-pink-600 whitespace-nowrap">${moeda(p.preco)}</span>
+                    </div>
+                    <div class="mobile-card-summary">
+                        <span>Estoque: <strong class="${(p.estoque||0)<=0?'estoque-zero':(p.estoque||0)<5?'estoque-low':'estoque-ok'}">${p.estoque ?? 0}</strong></span>
+                        <span>${p.em_promocao ? 'Promocao' : p.destaque ? 'Destaque' : 'Ativo'}</span>
+                    </div>
+                    <details class="mobile-expand">
+                        <summary>Ver detalhes</summary>
+                        <div class="mobile-meta">
+                            <div class="mobile-meta-item"><span class="mobile-meta-label">Preco</span><span class="mobile-meta-value text-pink-600">${moeda(p.preco)}</span></div>
+                            <div class="mobile-meta-item"><span class="mobile-meta-label">Preco original</span><span class="mobile-meta-value">${p.preco_original ? moeda(p.preco_original) : '-'}</span></div>
+                            <div class="mobile-meta-item"><span class="mobile-meta-label">Estoque</span><span class="mobile-meta-value ${(p.estoque||0)<=0?'estoque-zero':(p.estoque||0)<5?'estoque-low':'estoque-ok'}">${p.estoque ?? 0}</span></div>
+                            <div class="mobile-meta-item"><span class="mobile-meta-label">Vendidos</span><span class="mobile-meta-value">${p.qtd_vendidos ?? 0}</span></div>
+                            <div class="mobile-meta-item"><span class="mobile-meta-label">Codigo</span><span class="mobile-meta-value">${p.codigo_barras || '-'}</span></div>
+                            <div class="mobile-meta-item"><span class="mobile-meta-label">Categoria</span><span class="mobile-meta-value">${p.categorias?.nome || '-'}</span></div>
+                            <div class="mobile-meta-item"><span class="mobile-meta-label">Subcategoria</span><span class="mobile-meta-value">${p.subcategorias?.nome || '-'}</span></div>
+                            <div class="mobile-meta-item"><span class="mobile-meta-label">Tom</span><span class="mobile-meta-value">${p.tom || '-'}</span></div>
+                            <div class="mobile-meta-item"><span class="mobile-meta-label">Cor</span><span class="mobile-meta-value">${p.cor || '-'}</span></div>
+                            <div class="mobile-meta-item"><span class="mobile-meta-label">Tamanho</span><span class="mobile-meta-value">${p.tamanho || '-'}</span></div>
+                            <div class="mobile-meta-item"><span class="mobile-meta-label">Volume</span><span class="mobile-meta-value">${p.volume || '-'}</span></div>
+                            <div class="mobile-meta-item"><span class="mobile-meta-label">Acabamento</span><span class="mobile-meta-value">${p.acabamento || '-'}</span></div>
+                            <div class="mobile-meta-item"><span class="mobile-meta-label">Cobertura</span><span class="mobile-meta-value">${p.cobertura || '-'}</span></div>
+                            <div class="mobile-meta-item col-span-2"><span class="mobile-meta-label">Indicado para</span><span class="mobile-meta-value">${p.tipo_pele || '-'}</span></div>
+                            <div class="mobile-meta-item"><span class="mobile-meta-label">Destaque</span><span class="mobile-meta-value">${p.destaque ? 'Sim' : 'Nao'}</span></div>
+                            <div class="mobile-meta-item"><span class="mobile-meta-label">Promocao</span><span class="mobile-meta-value">${p.em_promocao ? 'Sim' : 'Nao'}</span></div>
+                            <div class="mobile-meta-item col-span-2"><span class="mobile-meta-label">Descricao</span><span class="mobile-meta-value">${p.descricao || '-'}</span></div>
+                        </div>
+                        <div class="mobile-actions">
+                            <button onclick="editarItem('produto','${p.id}')" class="btn btn-blue"><i class="bi bi-pencil"></i> Editar</button>
+                            <button onclick="ajustarEstoqueModal(${p.id},'${escHtml(p.nome)}',${p.estoque||0})" class="btn btn-green"><i class="bi bi-boxes"></i> Estoque</button>
+                            <button onclick="confirmarDelete('produto','${p.id}','${escHtml(p.nome)}','produtos')" class="btn btn-red col-span-2"><i class="bi bi-trash"></i> Excluir</button>
+                        </div>
+                    </details>
+                </article>`).join('')}</div>`
+            : '<p class="text-gray-400 text-xs p-8 text-center">Nenhum produto cadastrado.</p>';
+        return;
+    }
     document.getElementById('tbl-produtos').innerHTML = lista.length
         ? `<table>
             <thead><tr><th>Produto</th><th>Código Barras</th><th>Categoria</th><th>Preço</th><th>Estoque</th><th>Vendidos</th><th>Destaque</th><th>Promoção</th><th>Ações</th></tr></thead>
@@ -1093,6 +1353,32 @@ function renderProdutos(lista) {
 
 function renderCategorias(lista) {
     document.getElementById('cnt-categoria').textContent = `${lista.length} categoria(s)`;
+    if (isMobileAdmin()) {
+        document.getElementById('tbl-categorias').innerHTML = lista.length
+            ? `<div class="mobile-list">${lista.map(c => `
+                <article class="mobile-card">
+                    <div class="mobile-card-head">
+                        <div class="mobile-card-icon bg-pink-100 text-pink-600"><i class="bi bi-tags"></i></div>
+                        <div class="min-w-0 flex-1">
+                            <h3 class="mobile-card-title">${c.nome}</h3>
+                            <p class="mobile-card-sub">${dados.produtos.filter(p => p.categoria_id === c.id).length} produto(s)</p>
+                        </div>
+                    </div>
+                    <details class="mobile-expand">
+                        <summary>Ações</summary>
+                        <div class="mobile-meta">
+                            <div class="mobile-meta-item"><span class="mobile-meta-label">Produtos</span><span class="mobile-meta-value">${dados.produtos.filter(p => p.categoria_id === c.id).length}</span></div>
+                            <div class="mobile-meta-item"><span class="mobile-meta-label">Subcategorias</span><span class="mobile-meta-value">${dados.subcategorias.filter(s => s.categoria_id === c.id).length}</span></div>
+                        </div>
+                        <div class="mobile-actions">
+                            <button onclick="editarItem('categoria','${c.id}')" class="btn btn-blue"><i class="bi bi-pencil"></i> Editar</button>
+                            <button onclick="confirmarDelete('categoria','${c.id}','${escHtml(c.nome)}','categorias')" class="btn btn-red"><i class="bi bi-trash"></i> Excluir</button>
+                        </div>
+                    </details>
+                </article>`).join('')}</div>`
+            : '<p class="text-gray-400 text-xs p-8 text-center">Nenhuma categoria.</p>';
+        return;
+    }
     document.getElementById('tbl-categorias').innerHTML = lista.length
         ? `<table>
             <thead><tr><th>ID</th><th>Nome</th><th>Subcategorias</th><th>Produtos</th><th>Ações</th></tr></thead>
@@ -1115,6 +1401,28 @@ function renderCategorias(lista) {
 
 function renderSubcategorias(lista) {
     document.getElementById('cnt-subcategoria').textContent = `${lista.length} subcategoria(s)`;
+    if (isMobileAdmin()) {
+        document.getElementById('tbl-subcategorias').innerHTML = lista.length
+            ? `<div class="mobile-list">${lista.map(s => `
+                <article class="mobile-card">
+                    <div class="mobile-card-head">
+                        <div class="mobile-card-icon bg-blue-100 text-blue-600"><i class="bi bi-diagram-3"></i></div>
+                        <div class="min-w-0 flex-1">
+                            <h3 class="mobile-card-title">${s.nome}</h3>
+                            <p class="mobile-card-sub">${s.categorias?.nome || 'Sem categoria pai'}</p>
+                        </div>
+                    </div>
+                    <details class="mobile-expand">
+                        <summary>Ações</summary>
+                        <div class="mobile-actions">
+                            <button onclick="editarItem('subcategoria','${s.id}')" class="btn btn-blue"><i class="bi bi-pencil"></i> Editar</button>
+                            <button onclick="confirmarDelete('subcategoria','${s.id}','${escHtml(s.nome)}','subcategorias')" class="btn btn-red"><i class="bi bi-trash"></i> Excluir</button>
+                        </div>
+                    </details>
+                </article>`).join('')}</div>`
+            : '<p class="text-gray-400 text-xs p-8 text-center">Nenhuma subcategoria.</p>';
+        return;
+    }
     document.getElementById('tbl-subcategorias').innerHTML = lista.length
         ? `<table>
             <thead><tr><th>ID</th><th>Nome</th><th>Categoria</th><th>Ações</th></tr></thead>
@@ -1141,6 +1449,34 @@ function renderVendas(lista) {
         <div class="text-right"><p class="text-xs text-gray-400">Total filtrado</p><p class="font-bold text-pink-600">R$ ${total.toFixed(2).replace('.',',')}</p></div>
     `;
     document.getElementById('cnt-venda').textContent = `${lista.length} pedido(s)`;
+    if (isMobileAdmin()) {
+        document.getElementById('tbl-vendas').innerHTML = lista.length
+            ? `<div class="mobile-list">${lista.map(v => `
+                <article class="mobile-card">
+                    <div class="mobile-card-head">
+                        <div class="w-12 h-12 rounded-xl bg-green-100 text-green-600 flex items-center justify-center flex-shrink-0"><i class="bi bi-receipt"></i></div>
+                        <div class="min-w-0 flex-1">
+                            <h3 class="mobile-card-title">#${String(v.id).slice(-6).toUpperCase()} · ${moeda(v.total)}</h3>
+                            <p class="mobile-card-sub">${v.profiles?.nome || v.profiles?.email || 'Cliente nao informado'}</p>
+                        </div>
+                    </div>
+                    <div class="mobile-meta">
+                        <div class="mobile-meta-item"><span class="mobile-meta-label">Status</span><span class="mobile-meta-value">${v.status || 'pendente'}</span></div>
+                        <div class="mobile-meta-item"><span class="mobile-meta-label">Data</span><span class="mobile-meta-value">${fmtData(v.created_at)}</span></div>
+                        <div class="mobile-meta-item col-span-2"><span class="mobile-meta-label">Pagamento</span><span class="mobile-meta-value">${v.forma_pagamento || 'Nao informado'}</span></div>
+                    </div>
+                    <div class="mobile-actions">
+                        <button onclick="verVenda('${v.id}')" class="btn btn-blue"><i class="bi bi-eye"></i> Ver</button>
+                        <select onchange="atualizarStatusVenda('${v.id}', this.value)" class="inp text-xs">
+                            ${['pendente','confirmado','enviado','entregue','cancelado'].map(s =>
+                                `<option value="${s}" ${v.status===s?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                </article>`).join('')}</div>`
+            : '<p class="text-gray-400 text-xs p-8 text-center">Nenhuma venda.</p>';
+        return;
+    }
     document.getElementById('tbl-vendas').innerHTML = lista.length
         ? `<table>
             <thead><tr><th>Pedido</th><th>Cliente</th><th>Total</th><th>Pagamento</th><th>Status</th><th>Data</th><th>Ações</th></tr></thead>
@@ -1169,6 +1505,26 @@ function renderVendas(lista) {
 
 function renderUsuarios(lista) {
     document.getElementById('cnt-usuario').textContent = `${lista.length} usuário(s)`;
+    if (isMobileAdmin()) {
+        document.getElementById('tbl-usuarios').innerHTML = lista.length
+            ? `<div class="mobile-list">${lista.map(u => `
+                <article class="mobile-card">
+                    <div class="mobile-card-head">
+                        <div class="w-12 h-12 rounded-xl ${u.is_admin ? 'bg-pink-100 text-pink-600' : 'bg-sky-100 text-sky-600'} flex items-center justify-center flex-shrink-0"><i class="bi bi-person"></i></div>
+                        <div class="min-w-0 flex-1">
+                            <h3 class="mobile-card-title">${u.nome || 'Usuario sem nome'}</h3>
+                            <p class="mobile-card-sub">${u.email}</p>
+                        </div>
+                    </div>
+                    <div class="mobile-meta">
+                        <div class="mobile-meta-item"><span class="mobile-meta-label">Tipo</span><span class="mobile-meta-value">${u.is_admin ? 'Admin' : 'Cliente'}</span></div>
+                        <div class="mobile-meta-item"><span class="mobile-meta-label">Telefone</span><span class="mobile-meta-value">${u.telefone || '-'}</span></div>
+                    </div>
+                    ${!u.is_admin ? `<div class="mobile-actions"><button onclick="deletarUsuario('${u.id}','${escHtml(u.email)}')" class="btn btn-red col-span-2"><i class="bi bi-trash"></i> Remover</button></div>` : ''}
+                </article>`).join('')}</div>`
+            : '<p class="text-gray-400 text-xs p-8 text-center">Nenhum usuário.</p>';
+        return;
+    }
     document.getElementById('tbl-usuarios').innerHTML = lista.length
         ? `<table>
             <thead><tr><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Tipo</th><th>Cadastrado</th><th>Ações</th></tr></thead>
@@ -1213,6 +1569,32 @@ function renderEstoqueKpis(lista) {
 }
 
 function renderEstoque(lista) {
+    if (isMobileAdmin()) {
+        document.getElementById('tbl-estoque').innerHTML = lista.length
+            ? `<div class="mobile-list">${lista.map(p => {
+                const est = p.estoque || 0;
+                const statusTxt = est <= 0 ? 'Zerado' : est < 5 ? 'Critico' : 'Normal';
+                return `<article class="mobile-card">
+                    <div class="mobile-card-head">
+                        <img src="${p.imagem||'https://placehold.co/56x56/fce7f3/ec4899?text=?'}" class="w-14 h-14 rounded-xl object-cover flex-shrink-0" onerror="this.src='https://placehold.co/56x56/fce7f3/ec4899?text=?'">
+                        <div class="min-w-0 flex-1">
+                            <h3 class="mobile-card-title">${p.nome}</h3>
+                            <p class="mobile-card-sub">${p.codigo_barras || 'Sem codigo'} · ${p.categorias?.nome||'Sem categoria'}</p>
+                        </div>
+                    </div>
+                    <div class="mobile-meta">
+                        <div class="mobile-meta-item"><span class="mobile-meta-label">Estoque</span><span class="mobile-meta-value ${est<=0?'estoque-zero':est<5?'estoque-low':'estoque-ok'}">${est}</span></div>
+                        <div class="mobile-meta-item"><span class="mobile-meta-label">Status</span><span class="mobile-meta-value">${statusTxt}</span></div>
+                        <div class="mobile-meta-item col-span-2"><span class="mobile-meta-label">Vendidos</span><span class="mobile-meta-value">${p.qtd_vendidos||0}</span></div>
+                    </div>
+                    <div class="mobile-actions">
+                        <button onclick="ajustarEstoqueModal(${p.id},'${escHtml(p.nome)}',${est})" class="btn btn-green col-span-2"><i class="bi bi-pencil-square"></i> Ajustar estoque</button>
+                    </div>
+                </article>`;
+            }).join('')}</div>`
+            : '<p class="text-gray-400 text-xs p-8 text-center">Nenhum produto.</p>';
+        return;
+    }
     document.getElementById('tbl-estoque').innerHTML = lista.length
         ? `<table>
             <thead><tr><th>Produto</th><th>Código</th><th>Categoria</th><th>Estoque</th><th>Vendidos</th><th>Status</th><th>Ação</th></tr></thead>
@@ -1244,6 +1626,27 @@ function renderMovimentos(lista) {
     const iconTipo = { entrada:'bi-arrow-down-circle text-green-500', saida:'bi-arrow-up-circle text-red-500',
         ajuste:'bi-arrow-left-right text-blue-500', venda:'bi-cart-check text-purple-500',
         devolucao:'bi-arrow-counterclockwise text-orange-500' };
+    if (isMobileAdmin()) {
+        document.getElementById('tbl-movimentos').innerHTML = lista.length
+            ? `<div class="mobile-list">${lista.map(m => `
+                <article class="mobile-card">
+                    <div class="mobile-card-head">
+                        <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0"><i class="bi ${iconTipo[m.tipo]||'bi-question'}"></i></div>
+                        <div class="min-w-0 flex-1">
+                            <h3 class="mobile-card-title">${m.produtos?.nome||'Produto'}</h3>
+                            <p class="mobile-card-sub">${fmtDataHora(m.created_at)}</p>
+                        </div>
+                    </div>
+                    <div class="mobile-meta">
+                        <div class="mobile-meta-item"><span class="mobile-meta-label">Tipo</span><span class="mobile-meta-value">${m.tipo}</span></div>
+                        <div class="mobile-meta-item"><span class="mobile-meta-label">Qtd</span><span class="mobile-meta-value">${['entrada','devolucao'].includes(m.tipo)?'+':'-'}${m.quantidade}</span></div>
+                        <div class="mobile-meta-item"><span class="mobile-meta-label">Antes</span><span class="mobile-meta-value">${m.estoque_antes ?? '-'}</span></div>
+                        <div class="mobile-meta-item"><span class="mobile-meta-label">Depois</span><span class="mobile-meta-value">${m.estoque_depois ?? '-'}</span></div>
+                    </div>
+                </article>`).join('')}</div>`
+            : '<p class="text-gray-400 text-xs p-8 text-center">Nenhuma movimentação registrada.</p>';
+        return;
+    }
     document.getElementById('tbl-movimentos').innerHTML = lista.length
         ? `<table>
             <thead><tr><th>Data</th><th>Produto</th><th>Tipo</th><th>Qtd</th><th>Antes</th><th>Depois</th><th>Motivo</th></tr></thead>
@@ -1622,19 +2025,67 @@ window.abrirModal = function(tipo, id = null) {
     if (!cfg) return;
     document.getElementById('modal-crud-titulo').textContent = cfg.titulo;
     document.getElementById('modal-crud-campos').innerHTML = cfg.campos;
+    if (tipo === 'produto') codigoBarcodePendente = '';
+};
+
+window.abrirNovoProduto = function() {
+    codigoBarcodePendente = '';
+    abrirModal('produto');
+};
+
+window.abrirProdutoComCodigo = function(codigo) {
+    codigoBarcodePendente = codigo || '';
+    abrirModal('produto');
+};
+
+window.atualizarPreviewProduto = function(src) {
+    const preview = document.getElementById('produto-imagem-preview');
+    if (!preview) return;
+    preview.src = src || 'https://placehold.co/72x72/fce7f3/ec4899?text=?';
+};
+
+window.usarFotoProduto = function(input) {
+    const file = input.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+        mostrarToast('Selecione uma imagem valida.');
+        input.value = '';
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+            const maxSize = 900;
+            const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.max(1, Math.round(img.width * scale));
+            canvas.height = Math.max(1, Math.round(img.height * scale));
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/jpeg', .82);
+            const campo = document.getElementById('campo-imagem-produto');
+            if (campo) campo.value = dataUrl;
+            atualizarPreviewProduto(dataUrl);
+        };
+        img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
 };
 
 function camposProduto(p) {
     const cats = dados.categorias.map(c => `<option value="${c.id}" ${p?.categoria_id===c.id?'selected':''}>${c.nome}</option>`).join('');
     const subs = dados.subcategorias.map(s => `<option value="${s.id}" ${p?.subcategoria_id===s.id?'selected':''}>${s.nome}</option>`).join('');
+    const codigoInicial = p?.codigo_barras || (!p ? codigoBarcodePendente : '') || '';
     return `
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-2 gap-3 product-form-grid">
             <div class="col-span-2">
                 <label class="lbl">Código de Barras</label>
                 <div class="flex gap-2">
-                    <input type="text" name="codigo_barras" id="campo-codigo-barras" class="inp" value="${p?.codigo_barras||''}" placeholder="EAN-13, UPC, Code128...">
-                    <button type="button" onclick="iniciarScannerParaCampo()" class="btn btn-outline whitespace-nowrap" title="Escanear com câmera">
-                        <i class="bi bi-upc-scan"></i>
+                    <input type="text" name="codigo_barras" id="campo-codigo-barras" class="inp" value="${codigoInicial}" placeholder="Leia ou digite o código..." autocomplete="off" inputmode="numeric">
+                    <button type="button" onclick="prepararLeitorCodigo()" class="btn btn-outline whitespace-nowrap" title="Focar campo para leitor">
+                        <i class="bi bi-upc-scan"></i> Ler
                     </button>
                 </div>
             </div>
@@ -1645,7 +2096,45 @@ function camposProduto(p) {
             <div><label class="lbl">Qtd Vendidos</label><input type="number" name="qtd_vendidos" class="inp" value="${p?.qtd_vendidos||0}" min="0"></div>
             <div><label class="lbl">Categoria</label><select name="categoria_id" class="inp"><option value="">– Selecione –</option>${cats}</select></div>
             <div><label class="lbl">Subcategoria</label><select name="subcategoria_id" class="inp"><option value="">– Selecione –</option>${subs}</select></div>
-            <div><label class="lbl">Cor(es)</label><input type="text" name="cor" class="inp" value="${p?.cor||''}" placeholder="Ex: Rosa, Nude, Coral"></div>
+            <div class="col-span-2 rounded-xl border border-pink-100 bg-pink-50/40 p-3">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="w-8 h-8 rounded-lg bg-white text-pink-500 flex items-center justify-center border border-pink-100"><i class="bi bi-palette"></i></span>
+                    <div>
+                        <p class="text-sm font-bold text-gray-800">Variacoes e atributos</p>
+                        <p class="text-xs text-gray-500">Tons, cores, tamanho, volume e acabamento do produto.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="lbl">Tom(ns)</label>
+                        <input type="text" name="tom" class="inp" value="${p?.tom||''}" placeholder="Ex: Natural, Bege 02, Nude 3">
+                    </div>
+                    <div>
+                        <label class="lbl">Cor(es)</label>
+                        <input type="text" name="cor" class="inp" value="${p?.cor||''}" placeholder="Ex: Rosa, coral, marrom">
+                    </div>
+                    <div>
+                        <label class="lbl">Tamanho</label>
+                        <input type="text" name="tamanho" class="inp" value="${p?.tamanho||''}" placeholder="Ex: P, M, G, unico">
+                    </div>
+                    <div>
+                        <label class="lbl">Volume / peso</label>
+                        <input type="text" name="volume" class="inp" value="${p?.volume||''}" placeholder="Ex: 30ml, 8g, 120ml">
+                    </div>
+                    <div>
+                        <label class="lbl">Acabamento</label>
+                        <input type="text" name="acabamento" class="inp" value="${p?.acabamento||''}" placeholder="Ex: Matte, glow, cintilante">
+                    </div>
+                    <div>
+                        <label class="lbl">Cobertura</label>
+                        <input type="text" name="cobertura" class="inp" value="${p?.cobertura||''}" placeholder="Ex: Leve, media, alta">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="lbl">Indicado para</label>
+                        <input type="text" name="tipo_pele" class="inp" value="${p?.tipo_pele||''}" placeholder="Ex: Pele oleosa, seca, mista, todos os tipos">
+                    </div>
+                </div>
+            </div>
             <div class="flex items-center gap-2 self-end pb-1">
                 <input type="checkbox" name="destaque" id="chk-destaque" class="w-4 h-4 accent-pink-500" ${p?.destaque?'checked':''}>
                 <label for="chk-destaque" class="text-sm text-gray-700">Produto em destaque</label>
@@ -1654,7 +2143,25 @@ function camposProduto(p) {
                 <input type="checkbox" name="em_promocao" id="chk-em-promocao" class="w-4 h-4 accent-pink-500" ${p?.em_promocao?'checked':''}>
                 <label for="chk-em-promocao" class="text-sm text-gray-700">Em promoção</label>
             </div>
-            <div class="col-span-2"><label class="lbl">URL da Imagem</label><input type="url" name="imagem" class="inp" value="${p?.imagem||''}" placeholder="https://..."></div>
+            <div class="col-span-2">
+                <label class="lbl">Imagem do Produto</label>
+                <div class="flex gap-3 items-start flex-wrap">
+                    <img id="produto-imagem-preview" src="${p?.imagem||'https://placehold.co/72x72/fce7f3/ec4899?text=?'}" class="w-20 h-20 rounded-xl object-cover border border-gray-100 bg-pink-50 flex-shrink-0" onerror="this.src='https://placehold.co/72x72/fce7f3/ec4899?text=?'">
+                    <div class="flex-1 min-w-[220px] space-y-2">
+                        <input type="text" name="imagem" id="campo-imagem-produto" class="inp" value="${p?.imagem||''}" placeholder="https://..." oninput="atualizarPreviewProduto(this.value)">
+                        <div class="flex gap-2 flex-wrap">
+                            <label class="btn btn-outline cursor-pointer">
+                                <i class="bi bi-camera"></i> Tirar foto
+                                <input type="file" accept="image/*" capture="environment" class="hidden" onchange="usarFotoProduto(this)">
+                            </label>
+                            <label class="btn btn-outline cursor-pointer">
+                                <i class="bi bi-image"></i> Escolher imagem
+                                <input type="file" accept="image/*" class="hidden" onchange="usarFotoProduto(this)">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-span-2"><label class="lbl">Descrição</label><textarea name="descricao" class="inp" rows="3">${p?.descricao||''}</textarea></div>
         </div>`;
 }
@@ -1689,6 +2196,10 @@ document.getElementById('modal-crud-form').addEventListener('submit', async (e) 
             if (body.preco_original) body.preco_original = parseFloat(body.preco_original) || null;
             if (body.estoque       !== undefined) body.estoque       = parseInt(body.estoque||0);
             if (body.qtd_vendidos  !== undefined) body.qtd_vendidos  = parseInt(body.qtd_vendidos||0);
+            ['tom','cor','tamanho','volume','acabamento','cobertura','tipo_pele'].forEach(campo => {
+                const valor = e.target.querySelector(`[name="${campo}"]`)?.value?.trim();
+                body[campo] = valor || null;
+            });
         }
         const tabela = { produto:'produtos', categoria:'categorias', subcategoria:'subcategorias' }[editando.tipo];
         let error;
@@ -1787,101 +2298,35 @@ window.atualizarStatusVenda = async function(id, status) {
 // ══ SCANNER DE CÓDIGO DE BARRAS ══════════════════════════════
 
 // Abre scanner no formulário de produto
-window.iniciarScannerParaCampo = function() {
-    scannerCallback = (codigo) => {
-        const campo = document.getElementById('campo-codigo-barras');
-        if (campo) campo.value = codigo;
-    };
-    abrirScannerModal('scanner-container');
+window.prepararLeitorCodigo = function() {
+    const campo = document.getElementById('campo-codigo-barras');
+    if (!campo) return;
+    campo.focus();
+    campo.select();
+    mostrarToast('Campo pronto para o leitor de codigo.');
 };
 
 // Abre modal de busca por código
 window.abrirModalBarcode = function() {
     document.getElementById('modal-barcode-busca').classList.remove('hidden');
     document.getElementById('barcode-busca-resultado').innerHTML = '';
-    setTimeout(() => {
-        abrirScannerModal('scanner-busca-container', (codigo) => {
-            document.getElementById('busca-barcode-input').value = codigo;
-            buscarPorCodigo(codigo);
-        });
-    }, 200);
+    const input = document.getElementById('busca-barcode-input');
+    if (input) {
+        input.value = '';
+        setTimeout(() => input.focus(), 120);
+    }
 };
 
-function abrirScannerModal(containerId, callback) {
-    if (html5QrCode) {
-        try { html5QrCode.stop(); } catch(_) {}
+document.getElementById('busca-barcode-input')?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        buscarPorCodigo();
     }
-
-    if (callback) scannerCallback = callback;
-
-    // Garante modal scanner aberto para escanear em formulário
-    if (containerId === 'scanner-container') {
-        document.getElementById('modal-scanner').classList.remove('hidden');
-        document.getElementById('scanner-resultado').classList.add('hidden');
-    }
-
-    const config = { fps: 10, qrbox: { width: 280, height: 120 }, aspectRatio: 2.0,
-        formatsToSupport: [
-            Html5QrcodeSupportedFormats.EAN_13,
-            Html5QrcodeSupportedFormats.EAN_8,
-            Html5QrcodeSupportedFormats.UPC_A,
-            Html5QrcodeSupportedFormats.UPC_E,
-            Html5QrcodeSupportedFormats.CODE_128,
-            Html5QrcodeSupportedFormats.CODE_39,
-            Html5QrcodeSupportedFormats.ITF,
-        ]
-    };
-
-    html5QrCode = new Html5Qrcode(containerId);
-    html5QrCode.start(
-        { facingMode: 'environment' },
-        config,
-        (decodedText) => {
-            if (scannerCallback) scannerCallback(decodedText);
-            if (containerId === 'scanner-container') {
-                document.getElementById('scanner-resultado').innerHTML =
-                    `<i class="bi bi-check-circle mr-1"></i>Código detectado: <strong>${decodedText}</strong>`;
-                document.getElementById('scanner-resultado').classList.remove('hidden');
-            }
-            pararScanner();
-        },
-        () => {} // ignore erros de frame
-    ).catch(err => {
-        const msg = document.createElement('p');
-        msg.className = 'text-xs text-red-500 p-2';
-        msg.textContent = 'Não foi possível acessar a câmera. Use a entrada manual abaixo.';
-        document.getElementById(containerId).innerHTML = '';
-        document.getElementById(containerId).appendChild(msg);
-    });
-}
-
-function pararScanner() {
-    if (html5QrCode) {
-        try { html5QrCode.stop(); } catch(_) {}
-        html5QrCode = null;
-    }
-}
-
-window.fecharScanner = function() {
-    pararScanner();
-    document.getElementById('modal-scanner').classList.add('hidden');
-};
-
-window.usarCodigoManual = function() {
-    const v = document.getElementById('scanner-manual-input').value.trim();
-    if (!v) return;
-    if (scannerCallback) scannerCallback(v);
-    document.getElementById('scanner-resultado').innerHTML =
-        `<i class="bi bi-check-circle mr-1"></i>Código inserido: <strong>${v}</strong>`;
-    document.getElementById('scanner-resultado').classList.remove('hidden');
-    pararScanner();
-    document.getElementById('modal-scanner').classList.add('hidden');
-};
+});
 
 window.buscarPorCodigo = async function(codigoParam) {
     const codigo = codigoParam || document.getElementById('busca-barcode-input')?.value?.trim();
     if (!codigo) return;
-    pararScanner();
 
     const resEl = document.getElementById('barcode-busca-resultado');
     resEl.innerHTML = '<div class="flex justify-center py-4"><div class="spin"></div></div>';
@@ -1894,7 +2339,7 @@ window.buscarPorCodigo = async function(codigoParam) {
     if (error || !data) {
         resEl.innerHTML = `<div class="alert alert-err">
             <i class="bi bi-x-circle mr-1"></i>Produto não encontrado com código: <strong>${codigo}</strong>
-            <br><small>Deseja <a href="#" onclick="fecharModal('barcode-busca');abrirModal('produto')" class="underline">cadastrar um novo produto</a>?</small>
+            <br><small>Deseja <a href="#" onclick="fecharModal('barcode-busca');abrirProdutoComCodigo('${escHtml(codigo)}')" class="underline">cadastrar um novo produto</a>?</small>
         </div>`;
         return;
     }
@@ -1917,10 +2362,9 @@ window.buscarPorCodigo = async function(codigoParam) {
 // ══ FECHAR MODAIS ═════════════════════════════════════════════
 window.fecharModal = function(tipo) {
     document.getElementById(`modal-${tipo}`)?.classList.add('hidden');
-    if (tipo === 'scanner' || tipo === 'barcode-busca') pararScanner();
 };
 
-['modal-crud','modal-venda','modal-delete','modal-ajuste','modal-scanner','modal-barcode-busca'].forEach(id => {
+['modal-crud','modal-venda','modal-delete','modal-ajuste','modal-barcode-busca'].forEach(id => {
     document.getElementById(id)?.addEventListener('click', e => {
         if (e.target.id === id) fecharModal(id.replace('modal-',''));
     });

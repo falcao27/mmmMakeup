@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento aprovado | Menina Moça</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>*{font-family:Poppins,sans-serif}</style>
+</head>
+<body class="min-h-screen bg-pink-50 flex items-center justify-center p-4">
+    <main class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 text-center">
+        <div class="w-16 h-16 rounded-full bg-green-100 text-green-600 flex items-center justify-center mx-auto mb-4">
+            <span class="text-3xl">✓</span>
+        </div>
+        <h1 class="text-xl font-bold text-gray-800 mb-2">Pagamento aprovado</h1>
+        <p id="status-text" class="text-sm text-gray-500 mb-5">Estamos confirmando seu pedido...</p>
+        <a id="whatsapp-link" href="#" target="_blank" class="hidden w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-xl font-semibold text-sm transition-colors">
+            Enviar pedido no WhatsApp
+        </a>
+        <a href="index.html" class="block mt-3 text-sm text-pink-500 hover:underline">Voltar para a loja</a>
+    </main>
+
+    <script>
+        const STORE_WHATSAPP_PHONE = '5585988740788';
+
+        function getApiBaseUrl() {
+            const isStaticDevServer = ['127.0.0.1:5500', 'localhost:5500'].includes(window.location.host);
+            return isStaticDevServer ? 'http://localhost:3000' : '';
+        }
+
+        function abrirFallback() {
+            return localStorage.getItem('mp_pedido_whatsapp_fallback') ||
+                `https://web.whatsapp.com/send?phone=${STORE_WHATSAPP_PHONE}`;
+        }
+
+        async function confirmarPagamento() {
+            const params = new URLSearchParams(window.location.search);
+            const paymentId = params.get('payment_id') || params.get('collection_id');
+            const externalReference = params.get('external_reference') || localStorage.getItem('mp_venda_pendente') || '';
+            const statusText = document.getElementById('status-text');
+            const whatsappLink = document.getElementById('whatsapp-link');
+
+            try {
+                if (!paymentId) throw new Error('Pagamento sem identificador de retorno.');
+
+                const url = `${getApiBaseUrl()}/api/mercadopago/retorno?payment_id=${encodeURIComponent(paymentId)}&external_reference=${encodeURIComponent(externalReference)}`;
+                const response = await fetch(url);
+                const result = await response.json().catch(() => ({}));
+
+                if (!response.ok || !result.approved) {
+                    throw new Error(result.erro || 'Pagamento ainda não aprovado.');
+                }
+
+                localStorage.removeItem('carrinho');
+                localStorage.removeItem('mp_venda_pendente');
+                localStorage.removeItem('mp_pedido_whatsapp_fallback');
+
+                whatsappLink.href = result.whatsappLink || abrirFallback();
+                whatsappLink.classList.remove('hidden');
+                statusText.textContent = 'Pedido confirmado. Vamos abrir o WhatsApp da loja com os detalhes.';
+                setTimeout(() => { window.location.href = whatsappLink.href; }, 1200);
+            } catch (error) {
+                console.error(error);
+                whatsappLink.href = abrirFallback();
+                whatsappLink.classList.remove('hidden');
+                statusText.textContent = 'Pagamento recebido, mas não conseguimos confirmar automaticamente. Envie o pedido pelo WhatsApp.';
+            }
+        }
+
+        confirmarPagamento();
+    </script>
+</body>
+</html>

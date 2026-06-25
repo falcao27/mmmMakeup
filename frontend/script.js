@@ -7,21 +7,111 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Constantes globais
 const DEFAULT_IMAGE = 'https://placehold.co/400x300/pink/white?text=Menina+Moca';
+const STORE_WHATSAPP_PHONE = '5585988740788';
+let mercadoPagoConfigCache = null;
 
 // Função global para alternar o carrinho
 function getProdutoImagem(produto) {
     return produto?.imagem || produto?.url_imagem || DEFAULT_IMAGE;
 }
 
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 function getProdutoCores(produto) {
-    return String(produto?.cores || produto?.cor || '')
+    return String(produto?.cor || '')
         .split(',')
         .map(cor => cor.trim())
         .filter(Boolean);
 }
 
-function getPrimeiraCor(produto) {
-    return getProdutoCores(produto)[0] || '';
+function getProdutoTons(produto) {
+    return String(produto?.tom || produto?.tons || '')
+        .split(',')
+        .map(tom => tom.trim())
+        .filter(Boolean);
+}
+
+function splitOpcoesProduto(valor) {
+    return String(valor || '')
+        .split(',')
+        .map(opcao => opcao.trim())
+        .filter(Boolean);
+}
+
+function getProdutoVariacoes(produto) {
+    const grupos = [
+        { campo: 'tom', label: 'Tom', opcoes: getProdutoTons(produto) },
+        { campo: 'cor', label: 'Cor', opcoes: getProdutoCores(produto) },
+        { campo: 'tamanho', label: 'Tamanho', opcoes: splitOpcoesProduto(produto?.tamanho) },
+        { campo: 'volume', label: 'Volume / peso', opcoes: splitOpcoesProduto(produto?.volume) },
+    ].filter(grupo => grupo.opcoes.length > 0);
+
+    return grupos;
+}
+
+function getVariacoesKey(variacoes = {}) {
+    return Object.entries(variacoes)
+        .filter(([, valor]) => valor)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([campo, valor]) => `${campo}:${valor}`)
+        .join('|');
+}
+
+function getItemCarrinhoKey(item) {
+    const variacoesKey = item.variacoesKey || getVariacoesKey(item.variacoes || (item.cor ? { cor: item.cor } : {}));
+    return `${item.id}-${variacoesKey || 'sem-variacao'}`.replace(/[^a-zA-Z0-9_-]/g, '_');
+}
+
+function formatarVariacoesItem(item) {
+    const variacoes = item.variacoes || {};
+    if (!Object.keys(variacoes).length && item.cor) variacoes.cor = item.cor;
+
+    return [
+        variacoes.tom ? `Tom: ${variacoes.tom}` : '',
+        variacoes.cor ? `Cor: ${variacoes.cor}` : '',
+        variacoes.tamanho ? `Tamanho: ${variacoes.tamanho}` : '',
+        variacoes.volume ? `Volume: ${variacoes.volume}` : '',
+    ].filter(Boolean);
+}
+
+function formatarVariacoesPedido(item) {
+    return formatarVariacoesItem(item)
+        .join(' | ') || null;
+}
+
+function getProdutoAtributos(produto) {
+    return [
+        produto?.tom ? ['Tom', produto.tom] : null,
+        produto?.cor ? ['Cor', produto.cor] : null,
+        produto?.tamanho ? ['Tamanho', produto.tamanho] : null,
+        produto?.volume ? ['Volume / peso', produto.volume] : null,
+        produto?.acabamento ? ['Acabamento', produto.acabamento] : null,
+        produto?.cobertura ? ['Cobertura', produto.cobertura] : null,
+        produto?.tipo_pele ? ['Indicado para', produto.tipo_pele] : null,
+    ].filter(Boolean);
+}
+
+function renderProdutoAtributos(produto) {
+    const atributos = getProdutoAtributos(produto);
+    if (!atributos.length) return '';
+
+    return `
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            ${atributos.map(([label, valor]) => `
+                <div class="rounded-xl border border-gray-100 bg-gray-50 px-3 py-2">
+                    <p class="text-[11px] uppercase tracking-wide text-gray-400 font-semibold">${label}</p>
+                    <p class="text-sm text-gray-700 font-medium">${escapeHtml(valor)}</p>
+                </div>
+            `).join('')}
+        </div>
+    `;
 }
 
 function getApiBaseUrl() {
@@ -40,6 +130,59 @@ async function fetchApi(path, options = {}) {
         throw error;
     }
 }
+
+function formatarMoeda(valor) {
+    return `R$ ${Number(valor || 0).toFixed(2).replace('.', ',')}`;
+}
+
+function criarMensagemPedido(itens, formaPagamento, totalPedido) {
+    let mensagem = 'Ola! Gostaria de fazer um pedido:\n\n';
+    mensagem += 'Itens do pedido:\n';
+
+    itens.forEach(item => {
+        const subtotal = Number(item.precoAtual || 0) * Number(item.quantidade || 0);
+        mensagem += `- ${item.nome || 'Produto'} (${item.quantidade}x) - ${formatarMoeda(subtotal)}\n`;
+        formatarVariacoesItem(item).forEach(linha => {
+            mensagem += `  ${linha}\n`;
+        });
+    });
+
+    mensagem += `\nTotal: ${formatarMoeda(totalPedido)}`;
+    mensagem += `\nForma de pagamento: ${formaPagamento}`;
+    return mensagem;
+}
+
+function criarWhatsappWebLink(mensagem) {
+    return `https://web.whatsapp.com/send?phone=${STORE_WHATSAPP_PHONE}&text=${encodeURIComponent(mensagem)}`;
+}
+
+function direcionarWhatsapp(link, janelaAberta = null) {
+    if (janelaAberta && !janelaAberta.closed) {
+        janelaAberta.location.href = link;
+        return true;
+    }
+    window.location.href = link;
+    return false;
+}
+
+async function getMercadoPagoConfig() {
+    if (mercadoPagoConfigCache) return mercadoPagoConfigCache;
+    try {
+        const response = await fetchApi('/api/mercadopago/config', { cache: 'no-store' });
+        if (!response.ok) throw new Error('Servidor de pagamento indisponivel.');
+        mercadoPagoConfigCache = await response.json();
+        if (!mercadoPagoConfigCache.canUseOnlinePayments) {
+            mercadoPagoConfigCache.message = mercadoPagoConfigCache.message || 'Servidor de pagamento sem credencial do Mercado Pago.';
+        }
+        return mercadoPagoConfigCache;
+    } catch (_) {
+        return {
+            configured: false,
+            canUseOnlinePayments: false,
+            message: 'Servidor de pagamento offline. Inicie o backend para liberar cartao.',
+        };
+    }
+}
 window.toggleCarrinho = function() {
     const carrinho = document.getElementById('carrinho');
     if (carrinho) {
@@ -54,7 +197,7 @@ class CarrinhoManager {
         this.atualizarCarrinhoUI();
     }
 
-    async adicionarItem(produtoId, cor, quantidade = 1) {
+    async adicionarItem(produtoId, cor, quantidade = 1, variacoesSelecionadas = null) {
         try {
             const feedbackElement = this.criarFeedbackElement('Adicionando ao carrinho...');
 
@@ -66,19 +209,21 @@ class CarrinhoManager {
 
             if (error) throw error;
 
-            const coresProduto = getProdutoCores(produto);
+            const variacoesProduto = getProdutoVariacoes(produto);
+            const variacoes = variacoesSelecionadas || (cor ? { cor } : {});
 
-            // Verifica se o produto tem cores e se uma cor foi selecionada
-            if (coresProduto.length > 0 && !cor) {
-                feedbackElement.textContent = 'Por favor, selecione uma cor antes de adicionar ao carrinho.';
+            const faltando = variacoesProduto.find(grupo => !variacoes[grupo.campo]);
+            if (faltando) {
+                feedbackElement.textContent = `Escolha ${faltando.label.toLowerCase()} antes de adicionar ao carrinho.`;
                 feedbackElement.className = 'fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg z-50';
                 setTimeout(() => feedbackElement.remove(), 3000);
                 return;
             }
 
+            const variacoesKey = getVariacoesKey(variacoes);
             let itemExistente = this.items.find(item => 
                 String(item.id) === String(produtoId) && 
-                (coresProduto.length === 0 || item.cor === cor)
+                (item.variacoesKey || getVariacoesKey(item.variacoes || (item.cor ? { cor: item.cor } : {}))) === variacoesKey
             );
 
             if (itemExistente) {
@@ -88,7 +233,9 @@ class CarrinhoManager {
                 const precoAtual = Number(produto.preco);
                 this.items.push({
                     ...produto,
-                    cor: coresProduto.length > 0 ? cor : null,
+                    cor: variacoes.cor || null,
+                    variacoes,
+                    variacoesKey,
                     precoAtual,
                     quantidade
                 });
@@ -161,22 +308,24 @@ class CarrinhoManager {
     }
 
     renderizarItemCarrinho(item) {
-        const itemId = `${item.id}-${item.cor || 'null'}`;
+        const itemId = getItemCarrinhoKey(item);
+        const variacoes = item.variacoes || (item.cor ? { cor: item.cor } : {});
+        const variacoesParam = encodeURIComponent(JSON.stringify(variacoes));
         return `
             <div class="flex items-center gap-4 p-4 border-b border-gray-100" id="item-${itemId}">
                 <img src="${getProdutoImagem(item)}"
-                     alt="${item.nome}"
+                     alt="${escapeHtml(item.nome)}"
                      class="w-20 h-20 object-cover rounded-lg">
                 
                 <div class="flex-1">
-                    <h3 class="font-medium text-gray-800">${item.nome}</h3>
-                    ${item.cor ? `<p class="text-sm text-gray-500">Cor: ${item.cor}</p>` : ''}
+                    <h3 class="font-medium text-gray-800">${escapeHtml(item.nome)}</h3>
+                    ${formatarVariacoesItem(item).map(linha => `<p class="text-sm text-gray-500">${escapeHtml(linha)}</p>`).join('')}
                     <div class="text-pink-500 font-semibold">
                         R$ ${(item.precoAtual * item.quantidade).toFixed(2)}
                     </div>
-                    
+
                     <div class="flex items-center justify-center gap-4 mt-2">
-                        <button onclick="window.carrinhoManager.atualizarQuantidade('${item.id}', -1, ${item.cor ? `'${item.cor}'` : 'null'})" 
+                        <button onclick="window.carrinhoManager.atualizarQuantidade('${item.id}', -1, '${variacoesParam}')"
                                 class="text-gray-600 text-lg font-medium">
                             -
                         </button>
@@ -184,14 +333,14 @@ class CarrinhoManager {
                               class="text-gray-600 text-lg font-medium">
                             ${item.quantidade}
                         </span>
-                        <button onclick="window.carrinhoManager.atualizarQuantidade('${item.id}', 1, ${item.cor ? `'${item.cor}'` : 'null'})" 
+                        <button onclick="window.carrinhoManager.atualizarQuantidade('${item.id}', 1, '${variacoesParam}')"
                                 class="text-gray-600 text-lg font-medium">
                             +
                         </button>
                     </div>
                 </div>
                 
-                <button onclick="window.carrinhoManager.removerItem('${item.id}', ${item.cor ? `'${item.cor}'` : 'null'})" 
+                <button onclick="window.carrinhoManager.removerItem('${item.id}', '${variacoesParam}')"
                         class="text-gray-400 hover:text-red-500 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -230,39 +379,47 @@ class CarrinhoManager {
         localStorage.setItem('carrinho', JSON.stringify(this.items));
     }
 
-    removerItem(produtoId, cor) {
+    parseVariacoesParam(variacoesParam) {
+        if (!variacoesParam || variacoesParam === 'null') return {};
+        try {
+            return JSON.parse(decodeURIComponent(variacoesParam));
+        } catch (_) {
+            return {};
+        }
+    }
+
+    removerItem(produtoId, variacoesParam) {
+        const variacoesKey = getVariacoesKey(this.parseVariacoesParam(variacoesParam));
         this.items = this.items.filter(item => {
             const idMatch = String(item.id) === String(produtoId);
-            if (!item.cor && !cor) return !idMatch;
-            return !(idMatch && item.cor === cor);
+            const itemKey = item.variacoesKey || getVariacoesKey(item.variacoes || (item.cor ? { cor: item.cor } : {}));
+            return !(idMatch && itemKey === variacoesKey);
         });
         this.saveToStorage();
         this.atualizarCarrinhoUI();
     }
 
-    async atualizarQuantidade(produtoId, delta, cor) {
+    async atualizarQuantidade(produtoId, delta, variacoesParam) {
         try {
-            
-            // Encontra o item considerando que cor pode ser null/undefined
+            const variacoesKey = getVariacoesKey(this.parseVariacoesParam(variacoesParam));
             const item = this.items.find(item => {
                 const idMatch = String(item.id) === String(produtoId);
-                // Se o item não tem cor definida, ignora a comparaÃ§Ã£o de cor
-                if (!item.cor && !cor) return idMatch;
-                return idMatch && item.cor === cor;
+                const itemKey = item.variacoesKey || getVariacoesKey(item.variacoes || (item.cor ? { cor: item.cor } : {}));
+                return idMatch && itemKey === variacoesKey;
             });
             
             
             if (item) {
                 const novaQuantidade = Math.max(1, item.quantidade + delta);
                 if (novaQuantidade <= 0) {
-                    await this.removerItem(produtoId, cor);
+                    await this.removerItem(produtoId, variacoesParam);
                 } else {
                     item.quantidade = novaQuantidade;
                     this.saveToStorage();
                     this.atualizarCarrinhoUI();
                 }
             } else {
-                console.error('Item não encontrado:', { produtoId, cor });
+                console.error('Item não encontrado:', { produtoId, variacoesKey });
             }
         } catch (error) {
             console.error('Erro ao atualizar quantidade:', error);
@@ -281,6 +438,149 @@ class CarrinhoManager {
         }, 0);
     }
 }
+
+function garantirModalVariacoesProduto() {
+    let modal = document.getElementById('modal-variacoes-produto');
+    if (modal) return modal;
+
+    const html = `
+        <div id="modal-variacoes-produto" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[90] px-4">
+            <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900">Escolha a opcao</h3>
+                        <p class="text-xs text-gray-500">Selecione as variacoes antes de adicionar ao carrinho.</p>
+                    </div>
+                    <button type="button" onclick="fecharEscolhaProduto()" class="w-9 h-9 rounded-full hover:bg-gray-100 text-gray-500">
+                        <span class="text-xl leading-none">&times;</span>
+                    </button>
+                </div>
+                <div id="modal-variacoes-conteudo" class="p-5 space-y-4"></div>
+                <div class="px-5 py-4 border-t border-gray-100 flex gap-3">
+                    <button type="button" onclick="fecharEscolhaProduto()" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl text-sm font-semibold hover:bg-gray-200 transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="button" onclick="confirmarEscolhaProduto()" class="flex-1 bg-pink-500 text-white py-3 rounded-xl text-sm font-semibold hover:bg-pink-600 transition-colors">
+                        Adicionar
+                    </button>
+                </div>
+            </div>
+        </div>`;
+
+    document.body.insertAdjacentHTML('beforeend', html);
+    return document.getElementById('modal-variacoes-produto');
+}
+
+window.abrirEscolhaProduto = async function(produtoId, quantidade = 1) {
+    try {
+        const { data: produto, error } = await supabase
+            .from('produtos')
+            .select('*')
+            .eq('id', produtoId)
+            .single();
+
+        if (error) throw error;
+
+        const grupos = getProdutoVariacoes(produto);
+        if (!grupos.length) {
+            await window.carrinhoManager.adicionarItem(produtoId, null, quantidade, {});
+            return;
+        }
+
+        window.produtoVariacaoAtual = {
+            produtoId,
+            quantidade,
+            selecionadas: {},
+            grupos,
+        };
+
+        const conteudo = document.getElementById('modal-variacoes-conteudo') || garantirModalVariacoesProduto().querySelector('#modal-variacoes-conteudo');
+        conteudo.innerHTML = `
+            <div class="flex gap-3 items-center pb-2">
+                <img src="${getProdutoImagem(produto)}" alt="${escapeHtml(produto.nome)}" class="w-16 h-16 rounded-xl object-cover bg-pink-50">
+                <div class="min-w-0">
+                    <p class="font-bold text-gray-900 leading-tight">${escapeHtml(produto.nome)}</p>
+                    <p class="text-sm font-semibold text-pink-500">${formatarMoeda(produto.preco)}</p>
+                </div>
+            </div>
+            ${grupos.map(grupo => `
+                <div class="space-y-2" data-grupo="${grupo.campo}">
+                    <p class="text-sm font-semibold text-gray-700">${grupo.label}</p>
+                    <div class="flex flex-wrap gap-2">
+                        ${grupo.opcoes.map(opcao => `
+                            <button type="button"
+                                    onclick="selecionarVariacaoProduto('${grupo.campo}', '${encodeURIComponent(opcao)}')"
+                                    class="variation-choice px-4 py-2 rounded-full border border-gray-200 bg-white text-gray-700 text-sm font-semibold hover:border-pink-300 hover:bg-pink-50 transition-colors"
+                                    data-campo="${grupo.campo}"
+                                    data-valor="${encodeURIComponent(opcao)}">
+                                ${escapeHtml(opcao)}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('')}
+            <p id="variacoes-produto-alerta" class="hidden text-sm text-red-500 bg-red-50 border border-red-100 rounded-xl px-3 py-2"></p>
+        `;
+
+        const modal = garantirModalVariacoesProduto();
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    } catch (error) {
+        console.error('Erro ao abrir escolha de produto:', error);
+        alert('Erro ao carregar opcoes do produto.');
+    }
+};
+
+window.selecionarVariacaoProduto = function(campo, valorCodificado) {
+    const valor = decodeURIComponent(valorCodificado);
+    if (!window.produtoVariacaoAtual) return;
+    window.produtoVariacaoAtual.selecionadas[campo] = valor;
+
+    document.querySelectorAll(`.variation-choice[data-campo="${campo}"]`).forEach(btn => {
+        btn.classList.remove('bg-pink-500', 'text-white', 'border-pink-500');
+        btn.classList.add('bg-white', 'text-gray-700', 'border-gray-200');
+    });
+
+    const selecionado = document.querySelector(`.variation-choice[data-campo="${campo}"][data-valor="${valorCodificado}"]`);
+    if (selecionado) {
+        selecionado.classList.remove('bg-white', 'text-gray-700', 'border-gray-200');
+        selecionado.classList.add('bg-pink-500', 'text-white', 'border-pink-500');
+    }
+
+    document.getElementById('variacoes-produto-alerta')?.classList.add('hidden');
+};
+
+window.confirmarEscolhaProduto = async function() {
+    const estado = window.produtoVariacaoAtual;
+    if (!estado) return;
+
+    const faltando = estado.grupos.find(grupo => !estado.selecionadas[grupo.campo]);
+    if (faltando) {
+        const alerta = document.getElementById('variacoes-produto-alerta');
+        if (alerta) {
+            alerta.textContent = `Escolha ${faltando.label.toLowerCase()} para continuar.`;
+            alerta.classList.remove('hidden');
+        }
+        return;
+    }
+
+    await window.carrinhoManager.adicionarItem(
+        estado.produtoId,
+        estado.selecionadas.cor || null,
+        estado.quantidade,
+        estado.selecionadas
+    );
+    window.fecharEscolhaProduto();
+};
+
+window.fecharEscolhaProduto = function() {
+    const modal = document.getElementById('modal-variacoes-produto');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+    window.produtoVariacaoAtual = null;
+};
 
 window.finalizarCompra = async function() {
     try {
@@ -302,6 +602,9 @@ window.finalizarCompra = async function() {
             }
         }
 
+        const mpConfig = await getMercadoPagoConfig();
+        const onlineDisponivel = !!mpConfig.canUseOnlinePayments;
+
         // Remove qualquer modal existente antes de criar um novo
         fecharModalPagamento();
         
@@ -310,20 +613,42 @@ window.finalizarCompra = async function() {
                 <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
                     <h3 class="text-xl font-semibold mb-4">Escolha a forma de pagamento</h3>
                     <div class="space-y-4">
+                        ${!onlineDisponivel ? `
+                            <div class="rounded-xl border border-yellow-200 bg-yellow-50 px-3 py-2 text-xs text-yellow-800">
+                                ${mpConfig.message || 'Cartao indisponivel no momento. Pix e dinheiro seguem pelo WhatsApp.'}
+                            </div>
+                        ` : ''}
                         <div class="space-y-2">
                             <label class="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-                                <input type="radio" name="pagamento" value="Cartao de Credito" class="h-4 w-4 text-pink-500">
-                                <span>Cartão de Crédito</span>
+                                <input type="radio" name="pagamento" value="Cartao de Credito" class="h-4 w-4 text-pink-500" ${onlineDisponivel ? 'checked' : 'disabled'}>
+                                <span>
+                                    <strong class="block">Cartao de credito</strong>
+                                    <small class="text-gray-500">Pagamento online seguro pelo Mercado Pago</small>
+                                </span>
+                            </label>
+
+                            <label class="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="radio" name="pagamento" value="Cartao de Debito" class="h-4 w-4 text-pink-500" ${onlineDisponivel ? '' : 'disabled'}>
+                                <span>
+                                    <strong class="block">Cartao de debito</strong>
+                                    <small class="text-gray-500">Pagamento online seguro pelo Mercado Pago</small>
+                                </span>
                             </label>
                             
                             <label class="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-                                <input type="radio" name="pagamento" value="Cartao de Debito" class="h-4 w-4 text-pink-500">
-                                <span>Cartão de Débito</span>
+                                <input type="radio" name="pagamento" value="PIX" class="h-4 w-4 text-pink-500" ${onlineDisponivel ? '' : 'checked'}>
+                                <span>
+                                    <strong class="block">PIX</strong>
+                                    <small class="text-gray-500">Enviar pedido para a loja pelo WhatsApp</small>
+                                </span>
                             </label>
-                            
+
                             <label class="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-                                <input type="radio" name="pagamento" value="PIX" class="h-4 w-4 text-pink-500">
-                                <span>PIX</span>
+                                <input type="radio" name="pagamento" value="Dinheiro" class="h-4 w-4 text-pink-500">
+                                <span>
+                                    <strong class="block">Dinheiro</strong>
+                                    <small class="text-gray-500">Enviar pedido para a loja pelo WhatsApp</small>
+                                </span>
                             </label>
                         </div>
                         
@@ -360,7 +685,71 @@ function fecharModalPagamento() {
     }
 }
 
+function mostrarModalPix(pix) {
+    const qrImg = pix.qr_code_base64 ? `data:image/png;base64,${pix.qr_code_base64}` : '';
+    const modalHTML = `
+        <div id="pix-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-2xl p-5 max-w-md w-full mx-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-gray-800">Pague com Pix</h3>
+                    <button onclick="fecharModalPix()" class="text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+                </div>
+                <p class="text-sm text-gray-500 mb-4">Escaneie o QR Code no app do seu banco ou copie o código Pix.</p>
+                ${qrImg ? `<img src="${qrImg}" alt="QR Code Pix" class="w-56 h-56 mx-auto border rounded-xl p-2 mb-4">` : ''}
+                <label class="block text-xs font-semibold text-gray-500 mb-1">Pix copia e cola</label>
+                <textarea id="pix-copia-cola" readonly class="w-full h-24 border rounded-xl p-3 text-xs text-gray-600">${pix.qr_code || ''}</textarea>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4">
+                    <button onclick="copiarCodigoPix()" class="px-4 py-3 border rounded-xl text-gray-700 hover:bg-gray-50 font-semibold text-sm">
+                        Copiar código Pix
+                    </button>
+                    <button onclick="verificarPagamentoPix('${pix.payment_id}')" class="px-4 py-3 bg-pink-500 text-white rounded-xl hover:bg-pink-600 font-semibold text-sm">
+                        Já paguei
+                    </button>
+                </div>
+                ${pix.ticket_url ? `<a href="${pix.ticket_url}" target="_blank" class="block text-center mt-3 text-sm text-pink-500 hover:underline">Abrir página do Pix</a>` : ''}
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+window.fecharModalPix = function() {
+    document.getElementById('pix-modal')?.remove();
+};
+
+window.copiarCodigoPix = async function() {
+    const campo = document.getElementById('pix-copia-cola');
+    if (!campo?.value) return;
+    await navigator.clipboard.writeText(campo.value);
+    alert('Código Pix copiado.');
+};
+
+window.verificarPagamentoPix = async function(paymentId) {
+    try {
+        const response = await fetchApi(`/api/mercadopago/retorno?payment_id=${encodeURIComponent(paymentId)}`);
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(result.erro || 'Erro ao verificar pagamento.');
+        }
+
+        if (!result.approved) {
+            alert('Pagamento ainda não aprovado. Aguarde alguns instantes e tente novamente.');
+            return;
+        }
+
+        window.carrinhoManager.limparCarrinho();
+        fecharModalPix();
+        direcionarWhatsapp(result.whatsappLink);
+    } catch (error) {
+        console.error('Erro ao verificar Pix:', error);
+        alert(error.message || 'Erro ao verificar pagamento Pix.');
+    }
+};
+
 async function confirmarPagamento() {
+    let whatsappWindow = null;
+    let whatsappDirecionado = false;
     try {
         const selectedPayment = document.querySelector('input[name="pagamento"]:checked');
 
@@ -370,10 +759,61 @@ async function confirmarPagamento() {
         }
 
         const cartItems = window.carrinhoManager.items;
+        const totalPedido = window.carrinhoManager.calcularTotal();
+        const mensagemFallback = criarMensagemPedido(cartItems, selectedPayment.value, totalPedido);
+        const whatsappFallbackLink = criarWhatsappWebLink(mensagemFallback);
+        whatsappWindow = window.open('', '_blank');
+        const mpConfig = await getMercadoPagoConfig();
+
         const { data: { session } } = await supabase.auth.getSession();
 
         if (!session?.access_token) {
-            throw new Error('Faça login novamente para finalizar a compra.');
+            direcionarWhatsapp(whatsappFallbackLink, whatsappWindow);
+            whatsappDirecionado = true;
+            throw new Error('Faça login novamente para registrar a compra. O pedido foi aberto no WhatsApp.');
+        }
+
+        if (['Cartao de Credito', 'Cartao de Debito'].includes(selectedPayment.value) && !mpConfig.canUseOnlinePayments) {
+            const modal = document.getElementById('payment-modal');
+            if (modal) modal.remove();
+            if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
+            whatsappWindow = null;
+            throw new Error(mpConfig.message || 'Cartao indisponivel no momento.');
+        }
+
+        if (['Cartao de Credito', 'Cartao de Debito'].includes(selectedPayment.value)) {
+            if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
+            whatsappWindow = null;
+
+            const response = await fetchApi('/api/mercadopago/preference', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`,
+                },
+                body: JSON.stringify({
+                    payment_type: selectedPayment.value === 'Cartao de Debito' ? 'debit_card' : 'credit_card',
+                    itens: cartItems.map(item => ({
+                        produto_id: item.id,
+                        quantidade: item.quantidade,
+                        cor: formatarVariacoesPedido(item),
+                    })),
+                }),
+            });
+
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(result.erro || 'Erro ao iniciar pagamento com Mercado Pago.');
+            }
+
+            localStorage.setItem('mp_venda_pendente', result.venda_id || '');
+            localStorage.setItem('mp_pedido_whatsapp_fallback', whatsappFallbackLink);
+
+            const modal = document.getElementById('payment-modal');
+            if (modal) modal.remove();
+
+            window.location.href = result.checkout_url;
+            return;
         }
 
         const response = await fetchApi('/api/checkout', {
@@ -387,25 +827,37 @@ async function confirmarPagamento() {
                 itens: cartItems.map(item => ({
                     produto_id: item.id,
                     quantidade: item.quantidade,
-                    cor: item.cor || null,
+                    cor: formatarVariacoesPedido(item),
                 })),
             }),
         });
 
         const result = await response.json().catch(() => ({}));
         if (!response.ok) {
-            throw new Error(result.erro || 'Erro ao processar pagamento. Por favor, tente novamente.');
+            console.error('Checkout API falhou:', result);
+            direcionarWhatsapp(result.whatsappLink || whatsappFallbackLink, whatsappWindow);
+            whatsappDirecionado = true;
+            window.carrinhoManager.limparCarrinho();
+            const modal = document.getElementById('payment-modal');
+            if (modal) modal.remove();
+            alert('Nao foi possivel registrar a compra automaticamente, mas seu pedido foi aberto no WhatsApp.');
+            return;
         }
 
         const modal = document.getElementById('payment-modal');
         if (modal) modal.remove();
 
         window.carrinhoManager.limparCarrinho();
-        window.open(result.whatsappLink, '_blank');
-        location.reload();
+        const abriuNovaAba = direcionarWhatsapp(result.whatsappLink || whatsappFallbackLink, whatsappWindow);
+        whatsappDirecionado = true;
+        if (abriuNovaAba) location.reload();
 
     } catch (error) {
         console.error('Erro ao confirmar pagamento:', error);
+        if (!whatsappDirecionado && whatsappWindow && !whatsappWindow.closed) {
+            whatsappWindow.close();
+        }
+        if (whatsappDirecionado) return;
         alert(error.message || 'Erro ao processar pagamento. Por favor, tente novamente.');
     }
 }
@@ -571,12 +1023,14 @@ function renderizarProduto(produto) {
     const valorPromocional = Number(produto.preco).toFixed(2);
     const valorFinal = temDesconto ? valorPromocional : Number(produto.preco).toFixed(2);
     const esgotado = produto.estoque !== undefined && produto.estoque !== null && Number(produto.estoque) <= 0;
+    const nomeProduto = escapeHtml(produto.nome || 'Produto sem nome');
+    const categoriaProduto = escapeHtml(produto.categoria?.nome || 'Sem categoria');
 
     return `
         <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden ${esgotado ? 'opacity-80' : ''}">
             <div class="relative">
                 <img src="${getProdutoImagem(produto)}"
-                     alt="${produto.nome}" 
+                     alt="${nomeProduto}"
                      onerror="this.src='${DEFAULT_IMAGE}'"
                      class="w-full h-36 sm:h-44 object-cover ${esgotado ? 'grayscale' : ''}">
 
@@ -597,11 +1051,11 @@ function renderizarProduto(produto) {
 
             <div class="p-2 sm:p-3">
                 <div class="text-[10px] sm:text-xs font-medium text-pink-500 mb-1 uppercase tracking-wider truncate">
-                    ${produto.categoria?.nome || 'Sem categoria'}
+                    ${categoriaProduto}
                 </div>
 
                 <h3 class="text-sm sm:text-base font-semibold text-gray-800 mb-2 line-clamp-2 leading-tight">
-                    ${produto.nome || 'Produto sem nome'}
+                    ${nomeProduto}
                 </h3>
 
                 <div class="flex flex-col gap-2">
@@ -632,7 +1086,7 @@ function renderizarProduto(produto) {
                                 Esgotado
                             </button>
                         ` : `
-                            <button onclick="window.carrinhoManager.adicionarItem('${produto.id}', '${getPrimeiraCor(produto)}')"
+                            <button onclick="abrirEscolhaProduto('${produto.id}')"
                                     class="flex-1 bg-pink-500 text-white py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-medium 
                                            hover:bg-pink-600 transition-all duration-300">
                                 + Carrinho
@@ -1142,7 +1596,7 @@ function renderizarProdutosDestaque(produtos) {
                                                hover:bg-gray-200 transition-all duration-300">
                                     Saiba Mais
                                 </button>
-                                <button onclick="window.carrinhoManager.adicionarItem('${produto.id}', '${getPrimeiraCor(produto)}')"
+                                <button onclick="abrirEscolhaProduto('${produto.id}')"
                                         class="flex-1 bg-pink-500 text-white py-3 rounded-2xl font-medium 
                                                hover:bg-pink-600 transition-all duration-300">
                                     Adicionar ao Carrinho
@@ -1265,7 +1719,7 @@ async function carregarProdutosDestaque() {
                                                            hover:bg-gray-200 transition-all duration-300">
                                                 Saiba Mais
                                             </button>
-                                            <button onclick="window.carrinhoManager.adicionarItem('${produto.id}', '${getPrimeiraCor(produto)}')"
+                                            <button onclick="abrirEscolhaProduto('${produto.id}')"
                                                     class="flex-1 bg-pink-500 text-white py-3 rounded-2xl font-medium 
                                                            hover:bg-pink-600 transition-all duration-300">
                                                 Adicionar ao Carrinho
@@ -1552,14 +2006,13 @@ async function abrirDetalheProduto(produtoId) {
 
         if (error) throw error;
 
-        // Processa as cores se existirem
-        const cores = getProdutoCores(produto);
-        
         // Determina se o produto está em promoÃ§Ã£o e calcula os preços
         const temDesconto = !!produto.em_promocao;
         const valorOriginal = produto.preco_original ? Number(produto.preco_original).toFixed(2) : '0.00';
         const valorPromocional = Number(produto.preco).toFixed(2);
         const valorAtual = Number(produto.preco).toFixed(2);
+        const nomeProduto = escapeHtml(produto.nome || 'Produto');
+        const descricaoProduto = escapeHtml(produto.descricao || 'Descricao nao disponivel');
         
         modalContent.innerHTML = `
             <button onclick="fecharModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
@@ -1572,7 +2025,7 @@ async function abrirDetalheProduto(produtoId) {
                 <!-- Imagem do Produto -->
                 <div class="relative">
                     <img src="${getProdutoImagem(produto)}"
-                         alt="${produto.nome}"
+                         alt="${nomeProduto}"
                          class="w-full h-auto rounded-lg shadow-lg">
                     ${temDesconto ? `
                         <div class="absolute top-4 right-4 bg-pink-500 text-white px-3 py-1.5 
@@ -1584,12 +2037,14 @@ async function abrirDetalheProduto(produtoId) {
 
                 <!-- InformaÃ§Ãµes do Produto -->
                 <div class="space-y-4">
-                    <h2 class="text-2xl font-bold text-gray-800">${produto.nome}</h2>
+                    <h2 class="text-2xl font-bold text-gray-800">${nomeProduto}</h2>
                     
                     <div class="flex items-center space-x-2">
                         <span class="text-gray-600">Estoque:</span>
                         <span class="text-gray-600 font-semibold">${produto.estoque || 0} unidades</span>
                     </div>
+
+                    ${renderProdutoAtributos(produto)}
 
                     <div class="flex flex-col">
                         ${temDesconto ? `
@@ -1605,27 +2060,6 @@ async function abrirDetalheProduto(produtoId) {
                             </span>
                         `}
                     </div>
-
-                    ${cores.length > 0 ? `
-                        <div class="space-y-2">
-                            <span class="text-gray-600 font-medium">Selecione a cor:</span>
-                            <div class="flex flex-wrap gap-2" id="cores-container">
-                                ${cores.map((cor, index) => `
-                                    <button 
-                                        onclick="selecionarCor('${cor}')"
-                                        class="cor-btn px-8 py-3 rounded-full transition-colors 
-                                               ${index === 0 ? 'bg-pink-600' : 'bg-pink-500'} 
-                                               text-white hover:bg-pink-600"
-                                        data-cor="${cor}">
-                                        ${cor}
-                                    </button>
-                                `).join('')}
-                            </div>
-                            <p id="cor-selecionada" class="text-sm text-gray-500 mt-2">
-                                ${cores.length > 0 ? `Cor selecionada: ${cores[0]}` : ''}
-                            </p>
-                        </div>
-                    ` : ''}
 
                     <!-- Controle de Quantidade -->
                     <div class="mt-4 flex flex-col items-center">
@@ -1643,7 +2077,7 @@ async function abrirDetalheProduto(produtoId) {
                         </div>
                     </div>
 
-                    <button onclick="comprarProdutoComCor('${produto.id}')"
+                    <button onclick="abrirEscolhaProduto('${produto.id}', parseInt(document.getElementById('quantidade-modal')?.textContent || '1'))"
                             class="w-full bg-pink-500 text-white py-3 rounded-xl font-medium 
                                    hover:bg-pink-600 transition-all duration-300 mt-4">
                         Adicionar ao Carrinho
@@ -1655,15 +2089,10 @@ async function abrirDetalheProduto(produtoId) {
             <div class="p-6 border-t border-gray-100">
                 <h3 class="text-xl font-semibold mb-4">DescriÃ§Ã£o do Produto</h3>
                 <p class="text-gray-600 leading-relaxed">
-                    ${produto.descricao || 'DescriÃ§Ã£o não disponÃ­vel'}
+                    ${descricaoProduto}
                 </p>
             </div>
         `;
-
-        // Se houver cores, seleciona a primeira por padrÃ£o
-        if (cores.length > 0) {
-            selecionarCor(cores[0]);
-        }
 
         modal.classList.remove('hidden');
         modal.classList.add('flex');
@@ -1746,35 +2175,8 @@ window.selecionarCor = function(cor) {
 // Função para comprar produto com cor
 window.comprarProdutoComCor = async function(produtoId) {
     try {
-        // Primeiro, busca o produto para verificar se tem cores
-        const { data: produto, error } = await supabase
-            .from('produtos')
-            .select('*')
-            .eq('id', produtoId)
-            .single();
-
-        if (error) throw error;
-
-        // Verifica se o produto tem cores definidas
-        const coresProduto = getProdutoCores(produto);
-        if (coresProduto.length > 0) {
-            const corSelecionada = document.querySelector('.cor-btn.bg-pink-600')?.dataset.cor;
-            
-            if (!corSelecionada) {
-                const feedbackElement = document.createElement('div');
-                feedbackElement.textContent = 'Por favor, selecione uma cor antes de adicionar ao carrinho.';
-                feedbackElement.className = 'fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg z-50';
-                document.body.appendChild(feedbackElement);
-                setTimeout(() => feedbackElement.remove(), 3000);
-                return;
-            }
-        }
-
         const quantidade = parseInt(document.getElementById('quantidade-modal')?.textContent || '1');
-        const corSelecionada = coresProduto.length > 0 ? document.querySelector('.cor-btn.bg-pink-600')?.dataset.cor : '';
-        
-        await window.carrinhoManager.adicionarItem(produtoId, corSelecionada, quantidade);
-        fecharModal();
+        await window.abrirEscolhaProduto(produtoId, quantidade);
     } catch (error) {
         console.error('Erro ao adicionar produto ao carrinho:', error);
         alert('Erro ao adicionar produto ao carrinho. Por favor, tente novamente.');
@@ -1783,5 +2185,5 @@ window.comprarProdutoComCor = async function(produtoId) {
 
 // TambÃ©m exporte as outras funÃ§Ãµes relacionadas
 window.fecharModal = fecharModal;
-window.atualizarQuantidadeModal = atualizarQuantidadeModal;
-window.comprarProdutoComCor = comprarProdutoComCor;
+window.atualizarQuantidadeModal = window.atualizarQuantidadeModal;
+window.comprarProdutoComCor = window.comprarProdutoComCor;

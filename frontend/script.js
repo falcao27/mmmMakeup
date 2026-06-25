@@ -897,13 +897,7 @@ async function filterProductsBySearchTerm(searchTerm) {
         // Buscar todos os produtos e filtrar no cliente
         const { data: produtos, error } = await supabase
             .from('produtos')
-            .select(`
-                *,
-                categoria:categoria_id (
-                    id,
-                    nome
-                )
-            `);
+            .select('*');
 
         if (error) throw error;
 
@@ -970,13 +964,7 @@ async function carregarProdutos(categoriaNome = 'todos') {
 
         let query = supabase
             .from('produtos')
-            .select(`
-                *,
-                categoria:categoria_id (
-                    id,
-                    nome
-                )
-            `);
+            .select('*');
 
         const { data: produtos, error } = await query;
         
@@ -1104,24 +1092,29 @@ function renderizarProduto(produto) {
 // ConfiguraÃ§Ã£o do slider
 let currentSlide = 0;
 const slider = document.getElementById('slider');
-const slides = slider.children.length;
+const slides = slider ? slider.children.length : 0;
 
 function updateSlider() {
+    if (!slider || slides === 0) return;
     slider.style.transform = `translateX(-${currentSlide * 100}%)`;
 }
 
 function nextSlide() {
+    if (slides === 0) return;
     currentSlide = (currentSlide + 1) % slides;
     updateSlider();
 }
 
 function prevSlide() {
+    if (slides === 0) return;
     currentSlide = (currentSlide - 1 + slides) % slides;
     updateSlider();
 }
 
 // Opcional: Adicionar transiÃ§Ã£o automÃ¡tica
-setInterval(nextSlide, 5000); // Muda slide a cada 5 segundos
+if (slides > 1) {
+    setInterval(nextSlide, 5000); // Muda slide a cada 5 segundos
+}
 
 // Função atualizada para carregar categorias com melhor tratamento de erro
 async function carregarCategorias() {
@@ -1244,13 +1237,7 @@ async function filterProductsBySubcategory(event, subcategoriaId) {
         
         const { data: produtos, error } = await supabase
             .from('produtos')
-            .select(`
-                *,
-                categoria:categoria_id (
-                    id,
-                    nome
-                )
-            `)
+            .select('*')
             .eq('subcategoria_id', subcategoriaId);
 
         if (error) throw error;
@@ -1440,13 +1427,7 @@ window.filterProducts = async function(categoryId) {
         
         let query = supabase
             .from('produtos')
-            .select(`
-                *,
-                categoria:categoria_id (
-                    id,
-                    nome
-                )
-            `);
+            .select('*');
 
         // Aplicar filtro apenas se não for "todos"
         if (categoryId !== 'todos') {
@@ -1651,13 +1632,7 @@ async function carregarProdutosDestaque() {
         
         const { data: produtos, error } = await supabase
         .from('produtos')
-        .select(`
-            *,
-            categoria:categoria_id (
-                id,
-                nome
-            )
-        `)
+        .select('*')
         .eq('destaque',true);
 
         if (error) {
@@ -1797,13 +1772,7 @@ async function carregarProdutosPromocao() {
 
         const { data: produtos, error } = await supabase
             .from('produtos')
-            .select(`
-                *,
-                categoria:categoria_id (
-                    id,
-                    nome
-                )
-            `)
+            .select('*')
             .eq('em_promocao', true);
 
         if (error) {

@@ -3,6 +3,7 @@ const express = require('express');
 const cors    = require('cors');
 const { createClient } = require('@supabase/supabase-js');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const crypto = require('crypto');
 
@@ -12,6 +13,7 @@ const WHATSAPP_PHONE = process.env.WHATSAPP_PHONE || '5585988740788';
 const MERCADO_PAGO_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN || '';
 const APP_URL = (process.env.APP_URL || `http://localhost:${PORT}`).replace(/\/$/, '');
 const API_URL = (process.env.API_URL || APP_URL).replace(/\/$/, '');
+const frontendPath = path.resolve(__dirname, '..', 'frontend');
 const isLocalAppUrl = APP_URL.includes('localhost') || APP_URL.includes('127.0.0.1');
 const allowedOrigins = [
     APP_URL,
@@ -27,6 +29,12 @@ const requiredEnv = ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY'];
 const missingEnv = requiredEnv.filter(name => !process.env[name]);
 if (missingEnv.length > 0) {
     console.error(`Variaveis de ambiente ausentes: ${missingEnv.join(', ')}`);
+    process.exit(1);
+}
+
+if (!fs.existsSync(path.join(frontendPath, 'index.html'))) {
+    console.error(`Frontend nao encontrado em: ${frontendPath}`);
+    console.error('No Render, publique o repositorio pela raiz do projeto, mantendo backend/ e frontend/ como pastas irmas.');
     process.exit(1);
 }
 // â”€â”€ Supabase Admin (service role â€“ apenas server-side) â”€â”€â”€â”€â”€â”€â”€â”€
@@ -66,7 +74,10 @@ app.get('/api/mercadopago/config', (req, res) => {
 });
 
 // â”€â”€ Servir o frontend â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-app.use(express.static(path.join(__dirname, '..', 'frontend')));
+app.use(express.static(frontendPath, {
+    index: 'index.html',
+    fallthrough: true,
+}));
 
 // â”€â”€ Middleware: verificar token Supabase + is_admin â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function verificarAdmin(req, res, next) {
@@ -766,11 +777,21 @@ app.get('/api/admin/estoque/movimentos', verificarAdmin, async (req, res) => {
 
 // â”€â”€ SPA fallback â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
+    if (path.extname(req.path)) {
+        return res.status(404).send('Arquivo nao encontrado.');
+    }
+    res.sendFile(path.join(frontendPath, 'index.html'));
+});
+
+app.use((err, req, res, next) => {
+    console.error('Erro inesperado:', err);
+    if (res.headersSent) return next(err);
+    res.status(err.status || 500).json({ erro: 'Erro interno do servidor.' });
 });
 
 app.listen(PORT, () => {
     console.log(`\nâœ… Servidor rodando em http://localhost:${PORT}`);
+    console.log(`Frontend: ${frontendPath}`);
     console.log(`ðŸ”‘ Painel admin:    http://localhost:${PORT}/admin.html`);
     console.log(`ðŸ›ï¸  Loja:            http://localhost:${PORT}/\n`);
     console.log('ðŸ“‹ Rotas disponÃ­veis:');

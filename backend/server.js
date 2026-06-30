@@ -18,12 +18,30 @@ const isLocalAppUrl = APP_URL.includes('localhost') || APP_URL.includes('127.0.0
 const allowedOrigins = [
     APP_URL,
     API_URL,
+    process.env.RENDER_EXTERNAL_HOSTNAME ? `https://${process.env.RENDER_EXTERNAL_HOSTNAME}` : '',
     ...(process.env.ALLOWED_ORIGINS || '').split(',').map(origin => origin.trim()).filter(Boolean),
     `http://localhost:${PORT}`,
     `http://127.0.0.1:${PORT}`,
     'http://localhost:5500',
     'http://127.0.0.1:5500',
-];
+].filter(Boolean);
+
+function isAllowedOrigin(origin, req) {
+    if (!origin) return true;
+    if (allowedOrigins.includes(origin)) return true;
+
+    try {
+        const originUrl = new URL(origin);
+        const requestHost = req.get('host');
+
+        if (requestHost && originUrl.host === requestHost) return true;
+        if (['localhost', '127.0.0.1'].includes(originUrl.hostname)) return true;
+    } catch (_) {
+        return false;
+    }
+
+    return false;
+}
 
 const requiredEnv = ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY'];
 const missingEnv = requiredEnv.filter(name => !process.env[name]);
@@ -52,12 +70,14 @@ app.use((req, res, next) => {
     res.setHeader('Permissions-Policy', 'camera=(self), microphone=(), geolocation=()');
     next();
 });
-app.use(cors({
-    origin(origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-        return callback(new Error('Origem nao permitida pelo CORS.'));
-    },
-}));
+app.use((req, res, next) => {
+    cors({
+        origin(origin, callback) {
+            if (isAllowedOrigin(origin, req)) return callback(null, true);
+            return callback(new Error(`Origem nao permitida pelo CORS: ${origin}`));
+        },
+    })(req, res, next);
+});
 app.use(express.json());
 
 app.get('/api/health', (req, res) => {

@@ -456,6 +456,7 @@ textarea {
 .subcategories-dropdown {
     pointer-events: auto;
     animation: dropdownFadeIn 0.15s ease;
+    z-index: 10000;
 }
 
 .subcategories-dropdown.hidden {
@@ -661,8 +662,11 @@ h3 {
 /* Subcategory dropdown — dimensões base (posição definida inline via JS) */
 .subcategories-dropdown {
     min-width: 180px;
-    max-height: 80vh;
+    max-width: calc(100vw - 16px);
+    max-height: calc(100vh - 16px);
     overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Menu mobile animação suave */

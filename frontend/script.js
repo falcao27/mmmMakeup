@@ -1275,13 +1275,35 @@ async function filterProductsBySubcategory(event, subcategoriaId) {
 }
 
 // Funções de abertura/fechamento dos menus de subcategoria e mobile
+function moveDropdownToBody(dropdown) {
+    if (!dropdown.__originalParent) {
+        dropdown.__originalParent = dropdown.parentElement;
+        dropdown.__nextSibling = dropdown.nextSibling;
+    }
+
+    if (dropdown.parentElement !== document.body) {
+        document.body.appendChild(dropdown);
+    }
+}
+
+function restoreDropdownPosition(dropdown) {
+    if (dropdown.__originalParent && dropdown.parentElement !== dropdown.__originalParent) {
+        const nextSibling = dropdown.__nextSibling && dropdown.__nextSibling.parentElement === dropdown.__originalParent
+            ? dropdown.__nextSibling
+            : null;
+        dropdown.__originalParent.insertBefore(dropdown, nextSibling);
+    }
+}
+
 function closeAllSubmenus() {
     document.querySelectorAll('.subcategories-dropdown').forEach(dropdown => {
         dropdown.classList.add('hidden');
+        restoreDropdownPosition(dropdown);
         dropdown.style.position = '';
         dropdown.style.top = '';
         dropdown.style.left = '';
         dropdown.style.width = '';
+        dropdown.style.maxHeight = '';
         dropdown.style.zIndex = '';
     });
     // Reseta todas as setas para baixo
@@ -1356,22 +1378,35 @@ document.addEventListener('click', function(event) {
         if (isHidden) {
             // Calcula posiÃ§Ã£o usando getBoundingClientRect para position:fixed
             const btnRect = submenuToggle.getBoundingClientRect();
-            const dropdownWidth = 208; // w-52 = 13rem = 208px
             const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const dropdownWidth = Math.min(viewportWidth - 16, viewportWidth < 640 ? 260 : 208);
+            const viewportMargin = 8;
+            const spaceBelow = viewportHeight - btnRect.bottom - viewportMargin;
+            const spaceAbove = btnRect.top - viewportMargin;
 
             let top = btnRect.bottom + 6;
             let left = btnRect.left;
-            if (left + dropdownWidth > viewportWidth - 8) {
-                left = viewportWidth - dropdownWidth - 8;
+            if (left + dropdownWidth > viewportWidth - viewportMargin) {
+                left = viewportWidth - dropdownWidth - viewportMargin;
             }
-            if (left < 8) left = 8;
+            if (left < viewportMargin) left = viewportMargin;
 
+            moveDropdownToBody(dropdown);
             dropdown.style.position = 'fixed';
             dropdown.style.top = top + 'px';
             dropdown.style.left = left + 'px';
             dropdown.style.width = dropdownWidth + 'px';
-            dropdown.style.zIndex = '9999';
+            dropdown.style.maxHeight = Math.max(160, spaceBelow) + 'px';
+            dropdown.style.zIndex = '10000';
             dropdown.classList.remove('hidden');
+
+            const dropdownRect = dropdown.getBoundingClientRect();
+            if (dropdownRect.bottom > viewportHeight - viewportMargin && spaceAbove > spaceBelow) {
+                top = Math.max(viewportMargin, btnRect.top - dropdownRect.height - 6);
+                dropdown.style.top = top + 'px';
+                dropdown.style.maxHeight = Math.max(160, spaceAbove) + 'px';
+            }
 
             // Gira a seta do botÃ£o para cima (aberto)
             const arrow = submenuToggle.querySelector('.submenu-arrow');

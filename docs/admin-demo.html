@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Admin | Menina Moca Makeup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        body { background: #eef4f8; color: #1e293b; font-family: Arial, sans-serif; }
+        .card { background: #fff; border: 1px solid #e5edf5; border-radius: 8px; box-shadow: 0 1px 8px rgba(15,23,42,.06); }
+        .btn { display: inline-flex; align-items: center; gap: 6px; border-radius: 7px; padding: 8px 12px; font-size: 13px; font-weight: 700; }
+        .btn-pink { background: #ec4899; color: #fff; }
+        .btn-outline { background: #fff; color: #475569; border: 1px solid #dbe4ef; }
+        .badge { display: inline-flex; border-radius: 999px; padding: 3px 9px; font-size: 12px; font-weight: 700; }
+        .ok { background: #dcfce7; color: #166534; }
+        .warn { background: #fef9c3; color: #854d0e; }
+        .info { background: #dbeafe; color: #1e40af; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .nav.active { background: #ec4899; color: white; }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen lg:grid lg:grid-cols-[240px_1fr]">
+        <aside class="bg-slate-900 text-slate-200 p-5">
+            <h1 class="text-2xl font-bold text-white">Menina Moca</h1>
+            <p class="text-xs text-slate-400 mb-5">Admin demonstrativo</p>
+            <nav class="grid gap-2">
+                <button class="nav active btn text-left" data-page="dashboard"><i class="bi bi-speedometer2"></i> Dashboard</button>
+                <button class="nav btn text-left" data-page="produtos"><i class="bi bi-bag-heart"></i> Produtos</button>
+                <button class="nav btn text-left" data-page="vendas"><i class="bi bi-receipt"></i> Vendas</button>
+                <button class="nav btn text-left" data-page="estoque"><i class="bi bi-box-seam"></i> Estoque</button>
+            </nav>
+        </aside>
+
+        <main class="p-5 lg:p-7">
+            <div class="card bg-orange-50 border-orange-200 text-orange-800 p-4 mb-5">
+                <strong>Demo segura:</strong> esta pagina usa dados falsos e nao acessa Supabase, Mercado Pago, OpenAI ou o admin real da loja.
+            </div>
+
+            <section id="dashboard" class="page active">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                    <div>
+                        <h2 class="text-xl font-bold">Dashboard</h2>
+                        <p class="text-sm text-slate-500">Resumo visual para apresentacao do painel.</p>
+                    </div>
+                    <button class="btn btn-pink" onclick="toast('Relatorio demo gerado.')"><i class="bi bi-file-earmark-pdf"></i> Relatorio</button>
+                </div>
+                <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-5">
+                    <div class="card p-4"><p class="text-xs text-slate-500">Receita</p><p class="text-2xl font-bold text-pink-600">R$ 4.820,50</p></div>
+                    <div class="card p-4"><p class="text-xs text-slate-500">Pedidos</p><p class="text-2xl font-bold">128</p></div>
+                    <div class="card p-4"><p class="text-xs text-slate-500">Produtos</p><p class="text-2xl font-bold">46</p></div>
+                    <div class="card p-4"><p class="text-xs text-slate-500">Estoque baixo</p><p class="text-2xl font-bold text-amber-600">5</p></div>
+                </div>
+                <div class="card p-4">
+                    <h3 class="font-bold text-sm mb-4">Vendas da semana</h3>
+                    <div class="h-56 flex items-end gap-3 border-b border-slate-200 px-2">
+                        <div class="bg-pink-300 w-full rounded-t" style="height:42%"></div>
+                        <div class="bg-pink-400 w-full rounded-t" style="height:58%"></div>
+                        <div class="bg-cyan-400 w-full rounded-t" style="height:46%"></div>
+                        <div class="bg-pink-500 w-full rounded-t" style="height:74%"></div>
+                        <div class="bg-cyan-500 w-full rounded-t" style="height:63%"></div>
+                        <div class="bg-pink-600 w-full rounded-t" style="height:88%"></div>
+                        <div class="bg-emerald-500 w-full rounded-t" style="height:70%"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="produtos" class="page">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                    <div>
+                        <h2 class="text-xl font-bold">Produtos</h2>
+                        <p class="text-sm text-slate-500">Catalogo falso com a acao visual de IA.</p>
+                    </div>
+                    <button class="btn btn-pink" onclick="toast('Produto demo criado.')"><i class="bi bi-plus-lg"></i> Novo produto</button>
+                </div>
+                <div id="products" class="grid gap-3 md:grid-cols-2 xl:grid-cols-4"></div>
+            </section>
+
+            <section id="vendas" class="page">
+                <h2 class="text-xl font-bold mb-1">Vendas</h2>
+                <p class="text-sm text-slate-500 mb-5">Pedidos ficticios para demonstracao.</p>
+                <div class="grid gap-3 md:grid-cols-3">
+                    <div class="card p-4"><strong>#MM1028</strong><p>Ana Lima</p><p class="text-pink-600 font-bold">R$ 189,70</p><span class="badge info">confirmado</span></div>
+                    <div class="card p-4"><strong>#MM1027</strong><p>Bruna Alves</p><p class="text-pink-600 font-bold">R$ 74,90</p><span class="badge warn">pendente</span></div>
+                    <div class="card p-4"><strong>#MM1026</strong><p>Camila Rocha</p><p class="text-pink-600 font-bold">R$ 241,30</p><span class="badge ok">entregue</span></div>
+                </div>
+            </section>
+
+            <section id="estoque" class="page">
+                <h2 class="text-xl font-bold mb-1">Estoque</h2>
+                <p class="text-sm text-slate-500 mb-5">Alertas e movimentacoes de exemplo.</p>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="card p-4"><p class="text-xs text-slate-500">Entradas</p><p class="text-2xl font-bold text-emerald-600">84</p></div>
+                    <div class="card p-4"><p class="text-xs text-slate-500">Saidas</p><p class="text-2xl font-bold text-pink-600">51</p></div>
+                    <div class="card p-4"><p class="text-xs text-slate-500">Ajustes</p><p class="text-2xl font-bold text-cyan-700">9</p></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="toast" class="hidden fixed bottom-4 right-4 bg-slate-900 text-white text-sm px-4 py-3 rounded-lg shadow-lg"></div>
+
+    <script>
+        const produtos = [
+            ['Base Liquida Matte', 'Face', 'R$ 59,90', 18, 'destaque'],
+            ['Batom Velvet Nude', 'Labios', 'R$ 29,90', 42, 'promocao'],
+            ['Paleta Glow Rose', 'Olhos', 'R$ 89,90', 7, 'normal'],
+            ['Corretivo Soft', 'Face', 'R$ 39,90', 3, 'baixo']
+        ];
+
+        document.getElementById('products').innerHTML = produtos.map(([nome, categoria, preco, estoque, status]) => {
+            const badge = status === 'baixo' ? 'warn' : status === 'normal' ? 'info' : 'ok';
+            return `<div class="card p-4">
+                <div class="flex justify-between gap-3"><strong>${nome}</strong><span class="badge ${badge}">${status}</span></div>
+                <p class="text-sm text-slate-500 mt-1">${categoria} - ${preco} - estoque ${estoque}</p>
+                <button class="btn btn-outline mt-3" onclick="toast('IA demo: imagem melhorada com dados falsos.')"><i class="bi bi-stars"></i> IA demo</button>
+            </div>`;
+        }).join('');
+
+        document.querySelectorAll('.nav').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav').forEach((el) => el.classList.remove('active'));
+                document.querySelectorAll('.page').forEach((el) => el.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.page).classList.add('active');
+            });
+        });
+
+        function toast(msg) {
+            const el = document.getElementById('toast');
+            el.textContent = msg;
+            el.classList.remove('hidden');
+            clearTimeout(window.demoToastTimer);
+            window.demoToastTimer = setTimeout(() => el.classList.add('hidden'), 2400);
+        }
+    </script>
+</body>
+</html>

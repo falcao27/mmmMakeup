@@ -952,6 +952,23 @@ let ajusteEstoque = { produtoId: null, estoqueAtual: 0 };
 let codigoBarcodePendente = '';
 let charts = {};
 
+function getApiBaseUrl() {
+    const isStaticDevServer = ['127.0.0.1:5500', 'localhost:5500'].includes(window.location.host);
+    return isStaticDevServer ? 'http://localhost:3000' : '';
+}
+
+async function fetchApi(path, options = {}) {
+    try {
+        return await fetch(`${getApiBaseUrl()}${path}`, options);
+    } catch (error) {
+        const isStaticDevServer = ['127.0.0.1:5500', 'localhost:5500'].includes(window.location.host);
+        if (isStaticDevServer) {
+            throw new Error('Backend offline. Abra outro terminal na pasta backend e rode npm start.');
+        }
+        throw error;
+    }
+}
+
 // ══ AUTH ══════════════════════════════════════════════════════
 (async () => {
     const { data: { session } } = await db.auth.getSession();
@@ -2044,6 +2061,13 @@ window.atualizarPreviewProduto = function(src) {
     preview.src = src || 'https://placehold.co/72x72/fce7f3/ec4899?text=?';
 };
 
+function setStatusImagemProduto(msg, tipo = 'info') {
+    const el = document.getElementById('produto-imagem-status');
+    if (!el) return;
+    el.textContent = msg || '';
+    el.className = 'text-xs ' + (tipo === 'erro' ? 'text-red-600' : tipo === 'ok' ? 'text-green-600' : 'text-gray-500');
+}
+
 window.usarFotoProduto = function(input) {
     const file = input.files?.[0];
     if (!file) return;
@@ -2068,10 +2092,95 @@ window.usarFotoProduto = function(input) {
             const campo = document.getElementById('campo-imagem-produto');
             if (campo) campo.value = dataUrl;
             atualizarPreviewProduto(dataUrl);
+            setStatusImagemProduto('Foto carregada. Voce pode melhorar com IA antes de salvar.');
         };
         img.src = reader.result;
     };
     reader.readAsDataURL(file);
+};
+
+window.melhorarImagemProduto = async function(btn) {
+    const campo = document.getElementById('campo-imagem-produto');
+    const image = campo?.value?.trim();
+    if (!image) {
+        mostrarToast('Tire ou escolha uma foto primeiro.');
+        setStatusImagemProduto('Tire ou escolha uma foto primeiro.', 'erro');
+        return;
+    }
+
+    if (!image.startsWith('data:image/')) {
+        mostrarToast('A melhoria com IA funciona com foto enviada pelo campo.');
+        setStatusImagemProduto('Use Tirar foto ou Escolher imagem antes de melhorar com IA.', 'erro');
+        return;
+    }
+
+    const originalHtml = btn?.innerHTML;
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="bi bi-stars"></i> Melhorando...';
+    }
+    setStatusImagemProduto('A IA esta deixando a foto com visual mais profissional...');
+
+    try {
+        let { data: { session } } = await db.auth.getSession();
+        if (!session?.access_token) {
+            const { data: refreshed } = await db.auth.refreshSession();
+            session = refreshed?.session;
+        }
+        if (!session?.access_token) throw new Error('Sessao expirada. Entre novamente.');
+
+        const nome = document.querySelector('#modal-crud-form [name="nome"]')?.value?.trim() || '';
+        let response = await fetchApi('/api/admin/produtos/melhorar-imagem', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.access_token}`,
+            },
+            body: JSON.stringify({ image, productName: nome }),
+        });
+        if (response.status === 401) {
+            const { data: refreshed } = await db.auth.refreshSession();
+            session = refreshed?.session;
+            if (!session?.access_token) throw new Error('Sessao expirada. Entre novamente.');
+            response = await fetchApi('/api/admin/produtos/melhorar-imagem', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`,
+                },
+                body: JSON.stringify({ image, productName: nome }),
+            });
+        }
+
+        const responseText = await response.text();
+        let data = {};
+        try {
+            data = responseText ? JSON.parse(responseText) : {};
+        } catch (_) {
+            data = {};
+        }
+        if (!response.ok) {
+            const msg = data.erro || data.error?.message || (response.status === 404
+                ? 'Rota da IA nao encontrada. Verifique se o backend esta atualizado e rodando.'
+                : `Nao foi possivel melhorar a imagem. Codigo ${response.status}.`);
+            throw new Error(msg);
+        }
+        if (!data.image) throw new Error('A IA nao retornou uma imagem.');
+
+        campo.value = data.image;
+        atualizarPreviewProduto(data.image);
+        setStatusImagemProduto('Imagem melhorada com IA. Revise o preview e salve o produto.', 'ok');
+        mostrarToast('Imagem melhorada com IA!');
+    } catch (err) {
+        console.error('Erro IA imagem:', err);
+        setStatusImagemProduto(err.message || 'Erro ao melhorar imagem.', 'erro');
+        mostrarToast(err.message || 'Erro ao melhorar imagem.');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
+    }
 };
 
 function camposProduto(p) {
@@ -2158,7 +2267,11 @@ function camposProduto(p) {
                                 <i class="bi bi-image"></i> Escolher imagem
                                 <input type="file" accept="image/*" class="hidden" onchange="usarFotoProduto(this)">
                             </label>
+                            <button type="button" class="btn btn-pink" onclick="melhorarImagemProduto(this)" title="Melhorar foto com IA">
+                                <i class="bi bi-stars"></i> Melhorar com IA
+                            </button>
                         </div>
+                        <p id="produto-imagem-status" class="text-xs text-gray-500"></p>
                     </div>
                 </div>
             </div>
@@ -2237,7 +2350,7 @@ window.deletarUsuario = function(id, email) {
         fecharModal('delete');
         const { data: { session } } = await db.auth.getSession();
         if (session) {
-            await fetch(`/api/admin/usuarios/${id}`, {
+            await fetchApi(`/api/admin/usuarios/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${session.access_token}` }
             });

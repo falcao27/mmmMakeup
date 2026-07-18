@@ -4,13 +4,16 @@ const cors    = require('cors');
 const { createClient } = require('@supabase/supabase-js');
 const path = require('path');
 const fs = require('fs');
-require('dotenv').config({ path: path.join(__dirname, '.env') });
+require('dotenv').config({ path: path.join(__dirname, '.env'), override: true });
 const crypto = require('crypto');
+const { Blob } = require('buffer');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
 const WHATSAPP_PHONE = process.env.WHATSAPP_PHONE || '5585988740788';
 const MERCADO_PAGO_ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN || '';
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
+const OPENAI_IMAGE_MODEL = process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1';
 const APP_URL = (process.env.APP_URL || `http://localhost:${PORT}`).replace(/\/$/, '');
 const API_URL = (process.env.API_URL || APP_URL).replace(/\/$/, '');
 const frontendPath = path.resolve(__dirname, '..', 'frontend');
@@ -78,7 +81,7 @@ app.use((req, res, next) => {
         },
     })(req, res, next);
 });
-app.use(express.json());
+app.use(express.json({ limit: '12mb' }));
 
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok' });
@@ -102,10 +105,10 @@ app.use(express.static(frontendPath, {
 // â”€â”€ Middleware: verificar token Supabase + is_admin â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function verificarAdmin(req, res, next) {
     const token = req.headers.authorization?.split(' ')[1];
-    if (!token) return res.status(401).json({ erro: 'Token nÃ£o fornecido' });
+    if (!token) return res.status(401).json({ erro: 'Sessao expirada. Entre novamente.' });
 
     const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
-    if (error || !user) return res.status(401).json({ erro: 'Token invÃ¡lido ou expirado' });
+    if (error || !user) return res.status(401).json({ erro: 'Sessao invalida ou expirada. Entre novamente.' });
 
     const { data: profile } = await supabaseAdmin
         .from('profiles')
@@ -113,7 +116,7 @@ async function verificarAdmin(req, res, next) {
         .eq('id', user.id)
         .single();
 
-    if (!profile?.is_admin) return res.status(403).json({ erro: 'Acesso negado. NÃ£o Ã© administrador.' });
+    if (!profile?.is_admin) return res.status(403).json({ erro: 'Acesso negado. Esta conta nao e administradora.' });
 
     req.user = user;
     next();
@@ -125,10 +128,10 @@ async function verificarAdmin(req, res, next) {
 
 async function verificarUsuario(req, res, next) {
     const token = req.headers.authorization?.split(' ')[1];
-    if (!token) return res.status(401).json({ erro: 'Token nao fornecido' });
+    if (!token) return res.status(401).json({ erro: 'Sessao expirada. Entre novamente.' });
 
     const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
-    if (error || !user) return res.status(401).json({ erro: 'Token invalido ou expirado' });
+    if (error || !user) return res.status(401).json({ erro: 'Sessao invalida ou expirada. Entre novamente.' });
 
     req.user = user;
     next();
@@ -602,6 +605,97 @@ app.delete('/api/admin/usuarios/:id', verificarAdmin, async (req, res) => {
 //  ROTAS DE ESTOQUE
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
+function dataUrlParaImagem(dataUrl) {
+    const match = /^data:(image\/(?:jpeg|jpg|png|webp));base64,([a-zA-Z0-9+/=]+)$/.exec(String(dataUrl || ''));
+    if (!match) return null;
+
+    const mime = match[1] === 'image/jpg' ? 'image/jpeg' : match[1];
+    const buffer = Buffer.from(match[2], 'base64');
+    return { mime, buffer };
+}
+
+function mensagemErroOpenAI(error) {
+    const code = error?.code || '';
+    const type = error?.type || '';
+    const message = error?.message || '';
+    const lowerMessage = message.toLowerCase();
+
+    if (code === 'invalid_api_key' || (type === 'invalid_request_error' && lowerMessage.includes('api key'))) {
+        return 'Chave da OpenAI invalida. Confira OPENAI_API_KEY no .env do backend.';
+    }
+    if (code === 'insufficient_quota' || lowerMessage.includes('quota')) {
+        return 'Sua conta OpenAI esta sem quota/credito disponivel para gerar imagem.';
+    }
+    if (lowerMessage.includes('billing')) {
+        return 'Ative ou revise o billing da conta OpenAI para usar melhoria de imagem.';
+    }
+    if (lowerMessage.includes('organization must be verified')) {
+        return 'A organizacao da OpenAI precisa estar verificada para usar este modelo de imagem.';
+    }
+
+    return message || 'Erro ao melhorar imagem com IA.';
+}
+
+app.post('/api/admin/produtos/melhorar-imagem', verificarAdmin, async (req, res) => {
+    if (!OPENAI_API_KEY) {
+        return res.status(501).json({ erro: 'OPENAI_API_KEY nao configurada no backend.' });
+    }
+
+    const { image, productName } = req.body || {};
+    const parsed = dataUrlParaImagem(image);
+
+    if (!parsed) {
+        return res.status(400).json({ erro: 'Envie uma imagem em base64 no formato JPEG, PNG ou WEBP.' });
+    }
+
+    if (parsed.buffer.length > 8 * 1024 * 1024) {
+        return res.status(413).json({ erro: 'Imagem muito grande. Tente uma foto menor.' });
+    }
+
+    const prompt = [
+        'Transform this product photo into a clean professional ecommerce cosmetic product image.',
+        'Improve lighting, sharpness, color balance, composition, and background.',
+        'Keep the exact product, packaging shape, label text, logo, shade, and colors faithful to the original.',
+        'Do not add objects, text, hands, watermarks, props, or change the product identity.',
+        productName ? `Product name/context: ${String(productName).slice(0, 120)}.` : '',
+    ].filter(Boolean).join(' ');
+
+    try {
+        const form = new FormData();
+        const blob = new Blob([parsed.buffer], { type: parsed.mime });
+        form.append('image', blob, `produto.${parsed.mime.split('/')[1]}`);
+        form.append('model', OPENAI_IMAGE_MODEL);
+        form.append('prompt', prompt);
+        form.append('size', '1024x1024');
+        form.append('quality', 'medium');
+        form.append('output_format', 'jpeg');
+
+        const response = await fetch('https://api.openai.com/v1/images/edits', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${OPENAI_API_KEY}` },
+            body: form,
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            const err = new Error(mensagemErroOpenAI(data.error || data));
+            err.status = response.status;
+            throw err;
+        }
+
+        const b64 = data.data?.[0]?.b64_json;
+        if (!b64) throw new Error('A IA nao retornou uma imagem.');
+
+        res.json({
+            image: `data:image/jpeg;base64,${b64}`,
+            model: OPENAI_IMAGE_MODEL,
+        });
+    } catch (error) {
+        console.error('Erro ao melhorar imagem do produto:', error);
+        res.status(error.status || 500).json({ erro: error.message || 'Erro ao melhorar imagem com IA.' });
+    }
+});
+
 // Registrar movimentaÃ§Ã£o de estoque (via service role â€” bypassa RLS)
 app.post('/api/admin/estoque/movimentar', verificarAdmin, async (req, res) => {
     const { produto_id, tipo, quantidade, motivo } = req.body;
@@ -816,6 +910,7 @@ app.listen(PORT, () => {
     console.log(`ðŸ›ï¸  Loja:            http://localhost:${PORT}/\n`);
     console.log('ðŸ“‹ Rotas disponÃ­veis:');
     console.log('   DELETE /api/admin/usuarios/:id');
+    console.log('   POST   /api/admin/produtos/melhorar-imagem');
     console.log('   POST   /api/admin/estoque/movimentar');
     console.log('   GET    /api/admin/estoque/alertas');
     console.log('   GET    /api/admin/estoque/movimentos');

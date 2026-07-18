@@ -13,6 +13,11 @@ Loja online de maquiagem e cosmeticos com vitrine responsiva, carrinho, checkout
 - Controle de estoque com movimentacoes e alertas.
 - Retorno de pagamento com confirmacao de venda e baixa de estoque.
 
+## Demo Segura
+
+- Painel admin demonstrativo: https://falcao27.github.io/mmmMakeup/frontend/admin-demo.html
+- A demo usa somente dados falsos e nao conecta no Supabase, Mercado Pago, OpenAI ou admin real da loja.
+
 ## Integracoes
 
 - Supabase Auth e Database.

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Admin | Menina Moca Makeup</title>
+    <link rel="icon" href="assets/android-chrome-192x192.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        * { font-family: 'Poppins', sans-serif; }
+        .font-dancing { font-family: 'Dancing Script', cursive; }
+        body { background: #eef4f8; color: #1e293b; }
+        .sidebar { background: #172033; color: #cbd5e1; }
+        .nav-btn { display: flex; align-items: center; gap: .65rem; width: 100%; padding: .7rem .85rem; border-radius: .5rem; font-size: .83rem; font-weight: 600; }
+        .nav-btn:hover, .nav-btn.active { background: #ec4899; color: #fff; }
+        .card { background: #fff; border: 1px solid #e5edf5; border-radius: .5rem; box-shadow: 0 1px 8px rgba(15,23,42,.06); }
+        .btn { display: inline-flex; align-items: center; gap: .4rem; border-radius: .45rem; padding: .48rem .8rem; font-size: .78rem; font-weight: 700; }
+        .btn-pink { background: #ec4899; color: #fff; }
+        .btn-outline { background: #fff; color: #475569; border: 1px solid #dbe4ef; }
+        .badge { display: inline-flex; border-radius: 999px; padding: .2rem .55rem; font-size: .68rem; font-weight: 700; }
+        .badge-ok { background: #dcfce7; color: #166534; }
+        .badge-warn { background: #fef9c3; color: #854d0e; }
+        .badge-info { background: #dbeafe; color: #1e40af; }
+        .demo-banner { background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; }
+        table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+        th { text-align: left; background: #f8fafc; color: #64748b; font-size: .68rem; text-transform: uppercase; letter-spacing: .04em; padding: .72rem .9rem; }
+        td { padding: .75rem .9rem; border-top: 1px solid #eef2f7; color: #334155; }
+        .page { display: none; }
+        .page.active { display: block; }
+        @media (max-width: 860px) {
+            .layout { display: block; }
+            .sidebar { position: static; width: 100%; min-height: auto; }
+            .nav-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45rem; }
+            .desktop-table { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout min-h-screen grid grid-cols-[240px_1fr]">
+        <aside class="sidebar p-5">
+            <h1 class="font-dancing text-3xl text-white mb-1">Menina Moca</h1>
+            <p class="text-xs text-slate-400 mb-5">Painel demonstrativo</p>
+            <nav class="nav-list space-y-2">
+                <button class="nav-btn active" data-page="dashboard"><i class="bi bi-speedometer2"></i> Dashboard</button>
+                <button class="nav-btn" data-page="produtos"><i class="bi bi-bag-heart"></i> Produtos</button>
+                <button class="nav-btn" data-page="vendas"><i class="bi bi-receipt"></i> Vendas</button>
+                <button class="nav-btn" data-page="estoque"><i class="bi bi-box-seam"></i> Estoque</button>
+            </nav>
+        </aside>
+
+        <main class="p-5 lg:p-7">
+            <div class="demo-banner rounded-lg px-4 py-3 mb-5 flex items-center gap-3">
+                <i class="bi bi-shield-check text-lg"></i>
+                <div>
+                    <p class="text-sm font-bold">Demo segura</p>
+                    <p class="text-xs">Esta pagina usa dados falsos e nao acessa o admin real, banco, pagamentos ou chaves da loja.</p>
+                </div>
+            </div>
+
+            <section id="dashboard" class="page active">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                    <div>
+                        <h2 class="text-xl font-bold">Dashboard</h2>
+                        <p class="text-sm text-slate-500">Resumo visual para demonstracao do painel.</p>
+                    </div>
+                    <button class="btn btn-pink" onclick="toast('Relatorio demo gerado.')"><i class="bi bi-file-earmark-pdf"></i> Relatorio</button>
+                </div>
+
+                <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-5">
+                    <div class="card p-4"><p class="text-xs text-slate-500">Receita</p><p class="text-2xl font-bold text-pink-600">R$ 4.820,50</p></div>
+                    <div class="card p-4"><p class="text-xs text-slate-500">Pedidos</p><p class="text-2xl font-bold">128</p></div>
+                    <div class="card p-4"><p class="text-xs text-slate-500">Produtos</p><p class="text-2xl font-bold">46</p></div>
+                    <div class="card p-4"><p class="text-xs text-slate-500">Estoque baixo</p><p class="text-2xl font-bold text-amber-600">5</p></div>
+                </div>
+
+                <div class="grid lg:grid-cols-3 gap-4">
+                    <div class="card p-4 lg:col-span-2">
+                        <h3 class="font-bold text-sm mb-4">Vendas da semana</h3>
+                        <div class="h-56 flex items-end gap-3 border-b border-slate-200 px-2">
+                            <div class="bg-pink-300 w-full rounded-t" style="height:42%"></div>
+                            <div class="bg-pink-400 w-full rounded-t" style="height:58%"></div>
+                            <div class="bg-cyan-400 w-full rounded-t" style="height:46%"></div>
+                            <div class="bg-pink-500 w-full rounded-t" style="height:74%"></div>
+                            <div class="bg-cyan-500 w-full rounded-t" style="height:63%"></div>
+                            <div class="bg-pink-600 w-full rounded-t" style="height:88%"></div>
+                            <div class="bg-emerald-500 w-full rounded-t" style="height:70%"></div>
+                        </div>
+                    </div>
+                    <div class="card p-4">
+                        <h3 class="font-bold text-sm mb-4">Mais vendidos</h3>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between"><span>Base matte</span><strong>32</strong></div>
+                            <div class="flex justify-between"><span>Gloss nude</span><strong>28</strong></div>
+                            <div class="flex justify-between"><span>Paleta glow</span><strong>21</strong></div>
+                            <div class="flex justify-between"><span>Corretivo soft</span><strong>18</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="produtos" class="page">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                    <div>
+                        <h2 class="text-xl font-bold">Produtos</h2>
+                        <p class="text-sm text-slate-500">Catalogo falso para apresentar cadastro, filtros e a acao de IA.</p>
+                    </div>
+                    <button class="btn btn-pink" onclick="toast('Produto demo criado.')"><i class="bi bi-plus-lg"></i> Novo produto</button>
+                </div>
+                <div class="card overflow-hidden desktop-table">
+                    <table>
+                        <thead><tr><th>Produto</th><th>Categoria</th><th>Preco</th><th>Estoque</th><th>Status</th><th>Acoes</th></tr></thead>
+                        <tbody id="produtos-table"></tbody>
+                    </table>
+                </div>
+                <div id="produtos-cards" class="grid gap-3 md:hidden"></div>
+            </section>
+
+            <section id="vendas" class="page">
+                <div class="mb-5">
+                    <h2 class="text-xl font-bold">Vendas</h2>
+                    <p class="text-sm text-slate-500">Pedidos ficticios para demonstracao.</p>
+                </div>
+                <div class="card overflow-hidden">
+                    <table>
+                        <thead><tr><th>Pedido</th><th>Cliente</th><th>Total</th><th>Status</th><th>Pagamento</th></tr></thead>
+                        <tbody>
+                            <tr><td>#MM1028</td><td>Ana Lima</td><td>R$ 189,70</td><td><span class="badge badge-info">confirmado</span></td><td>Cartao</td></tr>
+                            <tr><td>#MM1027</td><td>Bruna Alves</td><td>R$ 74,90</td><td><span class="badge badge-warn">pendente</span></td><td>PIX WhatsApp</td></tr>
+                            <tr><td>#MM1026</td><td>Camila Rocha</td><td>R$ 241,30</td><td><span class="badge badge-ok">entregue</span></td><td>Dinheiro</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="estoque" class="page">
+                <div class="mb-5">
+                    <h2 class="text-xl font-bold">Estoque</h2>
+                    <p class="text-sm text-slate-500">Alertas e movimentacoes de exemplo.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="card p-4"><p class="text-xs text-slate-500">Entradas</p><p class="text-2xl font-bold text-emerald-600">84</p></div>
+                    <div class="card p-4"><p class="text-xs text-slate-500">Saidas</p><p class="text-2xl font-bold text-pink-600">51</p></div>
+                    <div class="card p-4"><p class="text-xs text-slate-500">Ajustes</p><p class="text-2xl font-bold text-cyan-700">9</p></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="toast" class="hidden fixed bottom-4 right-4 bg-slate-900 text-white text-sm px-4 py-3 rounded-lg shadow-lg"></div>
+
+    <script>
+        const produtos = [
+            ['Base Liquida Matte', 'Face', 'R$ 59,90', 18, 'destaque'],
+            ['Batom Velvet Nude', 'Labios', 'R$ 29,90', 42, 'promocao'],
+            ['Paleta Glow Rose', 'Olhos', 'R$ 89,90', 7, 'normal'],
+            ['Corretivo Soft', 'Face', 'R$ 39,90', 3, 'baixo']
+        ];
+
+        const table = document.getElementById('produtos-table');
+        const cards = document.getElementById('produtos-cards');
+
+        produtos.forEach(([nome, categoria, preco, estoque, status]) => {
+            const badge = status === 'baixo' ? 'badge-warn' : status === 'normal' ? 'badge-info' : 'badge-ok';
+            table.insertAdjacentHTML('beforeend', `<tr>
+                <td class="font-semibold">${nome}</td><td>${categoria}</td><td>${preco}</td><td>${estoque}</td>
+                <td><span class="badge ${badge}">${status}</span></td>
+                <td><button class="btn btn-outline" onclick="toast('IA demo: imagem melhorada com dados falsos.')"><i class="bi bi-stars"></i> IA demo</button></td>
+            </tr>`);
+
+            cards.insertAdjacentHTML('beforeend', `<div class="card p-4">
+                <div class="flex justify-between gap-3"><strong>${nome}</strong><span class="badge ${badge}">${status}</span></div>
+                <p class="text-sm text-slate-500 mt-1">${categoria} - ${preco} - estoque ${estoque}</p>
+                <button class="btn btn-outline mt-3" onclick="toast('IA demo: imagem melhorada com dados falsos.')"><i class="bi bi-stars"></i> IA demo</button>
+            </div>`);
+        });
+
+        document.querySelectorAll('.nav-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-btn').forEach((el) => el.classList.remove('active'));
+                document.querySelectorAll('.page').forEach((el) => el.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.page).classList.add('active');
+            });
+        });
+
+        function toast(msg) {
+            const el = document.getElementById('toast');
+            el.textContent = msg;
+            el.classList.remove('hidden');
+            clearTimeout(window.demoToastTimer);
+            window.demoToastTimer = setTimeout(() => el.classList.add('hidden'), 2400);
+        }
+    </script>
+</body>
+</html>

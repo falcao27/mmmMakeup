@@ -4,7 +4,7 @@ const cors    = require('cors');
 const { createClient } = require('@supabase/supabase-js');
 const path = require('path');
 const fs = require('fs');
-require('dotenv').config({ path: path.join(__dirname, '.env'), override: true });
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 const crypto = require('crypto');
 const { Blob } = require('buffer');
 

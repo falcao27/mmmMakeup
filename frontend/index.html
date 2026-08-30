@@ -1,31 +1,91 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menina Moça Makeup</title>
+    <title>Menina Moça Makeup | Beleza que revela você</title>
+    <meta name="description" content="Maquiagens e cosméticos escolhidos com carinho para realçar sua beleza. Compre online na Menina Moça Makeup.">
+    <meta name="theme-color" content="#881337">
+    <link rel="preload" as="image" href="assets/Batton-hero.jpg" media="(min-width: 768px)" fetchpriority="high">
+    <link rel="preload" as="image" href="assets/Batton-mobile.jpg" media="(max-width: 767px)" fetchpriority="high">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://esm.sh" crossorigin>
+    <link rel="preconnect" href="https://ixouszvipgklgdvmsyyw.supabase.co" crossorigin>
     <link rel="icon" href="assets/android-chrome-192x192.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Dancing+Script:wght@700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260829-scoop-showcase-width">
 </head>
-<body class="bg-gray-50 font-[Poppins]">
+<body class="storefront-body">
 
     <!-- Header Fixo -->
     <header class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-sm">
+        <div class="announcement-bar">
+            <div class="announcement-carousel" aria-label="Avisos e benefícios da loja">
+                <div class="announcement-viewport">
+                    <div id="announcement-track" class="announcement-track">
+                        <span>Atendimento personalizado</span>
+                        <span>Compra segura</span>
+                        <span>Enviamos para todo o Brasil</span>
+                        <span>Compra protegida</span>
+                        <span>Envio para todo Brasil</span>
+                        <span>Atendimento de verdade</span>
+                        <span>Curadoria especial</span>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="header-shell mx-auto px-4 relative">
             <div class="flex items-center justify-between h-16 gap-4">
 
                 <!-- Logo -->
-                <h1 class="site-logo text-2xl sm:text-3xl font-dancing text-pink-500 font-bold flex-shrink-0">Menina Moça</h1>
+                <a href="#inicio" class="site-logo flex-shrink-0" aria-label="Menina Moça Makeup - início">
+                    <em>O site oficial da</em>
+                    <span>Menina Moça</span>
+                    <small>MAKEUP</small>
+                </a>
 
                 <!-- Menu Desktop Central -->
-                <nav class="hidden md:flex gap-5 items-center justify-center flex-1 min-w-0">
-                    <a href="#inicio" class="text-gray-600 hover:text-pink-500 transition-colors text-sm">Início</a>
-                    <a href="#produtos" class="text-gray-600 hover:text-pink-500 transition-colors text-sm">Produtos</a>
-                    <a href="#promocoes" class="text-gray-600 hover:text-pink-500 transition-colors text-sm">Promoções</a>
-                    <a href="#Sobre" class="text-gray-600 hover:text-pink-500 transition-colors text-sm">Sobre</a>
+                <nav id="main-nav-desktop" class="hidden md:flex gap-5 items-center justify-center flex-1 min-w-0">
+                    <a href="#inicio" class="text-gray-600 hover:text-pink-500 transition-colors text-sm font-medium">Início</a>
+                    <div class="relative main-nav-dropdown">
+                        <button data-submenu-toggle="main-submenu-rosto" class="flex items-center gap-1 text-gray-600 hover:text-pink-500 transition-colors text-sm font-medium">
+                            Rosto
+                            <svg class="w-3.5 h-3.5 submenu-arrow transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div id="main-submenu-rosto" class="subcategories-dropdown hidden">
+                            <div class="bg-white rounded-xl shadow-xl border border-pink-100 py-2 min-w-[220px]">
+                                <div id="main-nav-rosto"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative main-nav-dropdown">
+                        <button data-submenu-toggle="main-submenu-olhos" class="flex items-center gap-1 text-gray-600 hover:text-pink-500 transition-colors text-sm font-medium">
+                            Olhos
+                            <svg class="w-3.5 h-3.5 submenu-arrow transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div id="main-submenu-olhos" class="subcategories-dropdown hidden">
+                            <div class="bg-white rounded-xl shadow-xl border border-pink-100 py-2 min-w-[220px]">
+                                <div id="main-nav-olhos"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative main-nav-dropdown">
+                        <button data-submenu-toggle="main-submenu-labios" class="flex items-center gap-1 text-gray-600 hover:text-pink-500 transition-colors text-sm font-medium">
+                            Lábios
+                            <svg class="w-3.5 h-3.5 submenu-arrow transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div id="main-submenu-labios" class="subcategories-dropdown hidden">
+                            <div class="bg-white rounded-xl shadow-xl border border-pink-100 py-2 min-w-[220px]">
+                                <div id="main-nav-labios"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#destaques" class="text-gray-600 hover:text-pink-500 transition-colors text-sm font-medium">Mais vendidos</a>
+                    <a href="#promocoes" class="text-gray-600 hover:text-pink-500 transition-colors text-sm font-medium">Ofertas</a>
+                    <a href="#Sobre" class="text-gray-600 hover:text-pink-500 transition-colors text-sm font-medium">Nossa marca</a>
                     <div class="flex items-center space-x-3 ml-2">
                         <!-- Instagram -->
                         <a href="https://instagram.com/meninamocamakeup_" target="_blank" class="text-gray-600 hover:text-pink-500 transition-colors">
@@ -49,7 +109,7 @@
                         <input
                             type="text"
                             id="search-input"
-                            placeholder="Nome do Produto"
+                            placeholder="O que você procura hoje?"
                             class="search-input"
                             oninput="handleSearchInput()"
                         />
@@ -73,7 +133,7 @@
 
                     <!-- Botão Login/Usuário -->
                     <div id="auth-btn-container" class="flex items-center flex-shrink-0">
-                        <!-- Estado: nÃ£o logado -->
+                        <!-- Estado: não logado -->
                         <a id="btn-login-header" href="login.html"
                            class="hidden items-center gap-1.5 text-sm text-gray-600 hover:text-pink-500 transition-colors px-3 py-1.5 rounded-lg hover:bg-pink-50">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -117,7 +177,7 @@
                         <span id="carrinho-badge" class="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
                     </button>
 
-                    <!-- Botão Hambúrguer (visÃ­vel apenas em mobile) -->
+                    <!-- Botão Hambúrguer (visível apenas em mobile) -->
                     <button id="mobile-menu-toggle"
                         class="flex md:hidden p-2 rounded-lg text-gray-600 hover:bg-pink-50 focus:outline-none focus:ring-2 focus:ring-pink-400 transition-colors"
                         aria-label="Abrir menu">
@@ -131,7 +191,7 @@
                 </div>
             </div>
 
-            <!-- Barra de busca mobile expansÃ­vel -->
+            <!-- Barra de busca mobile expansível -->
             <div id="mobile-search-bar" class="hidden sm:hidden pb-3">
                 <div class="search-container w-full">
                     <input
@@ -163,11 +223,35 @@
                     </svg>
                     Início
                 </a>
-                <a href="#produtos" class="mobile-nav-link flex items-center gap-3 py-3 px-3 rounded-xl text-gray-700 hover:text-pink-500 hover:bg-pink-50 transition-all font-medium">
+                <button onclick="toggleMobileNavCat('rosto')" class="mobile-nav-link flex items-center gap-3 py-3 px-3 rounded-xl text-gray-700 hover:text-pink-500 hover:bg-pink-50 transition-all font-medium w-full text-left">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                     </svg>
-                    Produtos
+                    Rosto
+                    <svg id="mobile-nav-rosto-arrow" class="w-4 h-4 ml-auto transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="mobile-nav-rosto" class="hidden pl-4 space-y-1"></div>
+                <button onclick="toggleMobileNavCat('olhos')" class="mobile-nav-link flex items-center gap-3 py-3 px-3 rounded-xl text-gray-700 hover:text-pink-500 hover:bg-pink-50 transition-all font-medium w-full text-left">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Olhos
+                    <svg id="mobile-nav-olhos-arrow" class="w-4 h-4 ml-auto transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="mobile-nav-olhos" class="hidden pl-4 space-y-1"></div>
+                <button onclick="toggleMobileNavCat('labios')" class="mobile-nav-link flex items-center gap-3 py-3 px-3 rounded-xl text-gray-700 hover:text-pink-500 hover:bg-pink-50 transition-all font-medium w-full text-left">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9 9 0 100-18 9 9 0 000 18z"/>
+                    </svg>
+                    Lábios
+                    <svg id="mobile-nav-labios-arrow" class="w-4 h-4 ml-auto transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="mobile-nav-labios" class="hidden pl-4 space-y-1"></div>
+                <a href="#destaques" class="mobile-nav-link flex items-center gap-3 py-3 px-3 rounded-xl text-gray-700 hover:text-pink-500 hover:bg-pink-50 transition-all font-medium">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                    </svg>
+                    Mais vendidos
                 </a>
                 <a href="#promocoes" class="mobile-nav-link flex items-center gap-3 py-3 px-3 rounded-xl text-gray-700 hover:text-pink-500 hover:bg-pink-50 transition-all font-medium">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -225,120 +309,198 @@
         </div>
     </header>
 
-    <!-- Hero Section com Slider -->
-    <section id="inicio" class="pt-16">
-        <div class="relative h-[360px] sm:h-[500px] md:h-[600px] overflow-hidden">
+    <!-- Hero editorial -->
+    <main>
+    <section id="inicio" class="hero-section">
+        <div class="hero-frame relative overflow-hidden">
             <div id="slider" class="flex transition-transform duration-500 h-full">
                 <div class="w-full flex-shrink-0">
-                    <img src="assets/Batton.jpg" alt="Batton" class="w-full h-full object-cover">
+                    <picture class="block w-full h-full">
+                        <source media="(max-width: 767px)" srcset="assets/Batton-mobile.jpg">
+                        <img src="assets/Batton-hero.jpg" alt="Seleção de batons Menina Moça" width="2200" height="1468" loading="eager" decoding="async" fetchpriority="high" class="w-full h-full object-cover">
+                    </picture>
                 </div>
                 <div class="w-full flex-shrink-0">
-                    <img src="assets/Paleta.jpg" alt="Paleta" class="w-full h-full object-cover">
+                    <picture class="block w-full h-full">
+                        <source media="(max-width: 767px)" srcset="assets/Paleta-mobile.jpg">
+                        <img src="assets/Paleta-hero.jpg" alt="Paletas de maquiagem Menina Moça" width="2200" height="2200" loading="lazy" decoding="async" fetchpriority="low" class="w-full h-full object-cover">
+                    </picture>
                 </div>
                 <div class="w-full flex-shrink-0">
-                    <img src="assets/Pincel.jpg" alt="Pincel" class="w-full h-full object-cover">
+                    <picture class="block w-full h-full">
+                        <source media="(max-width: 767px)" srcset="assets/Pincel-mobile.jpg">
+                        <img src="assets/Pincel-hero.jpg" alt="Pincéis de maquiagem Menina Moça" width="2200" height="1238" loading="lazy" decoding="async" fetchpriority="low" class="w-full h-full object-cover">
+                    </picture>
                 </div>
             </div>
-            <div class="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent flex items-center">
-                <div class="container mx-auto px-4">
-                    <div class="max-w-xl text-white">
-                        <h2 class="text-3xl sm:text-5xl font-bold mb-3 sm:mb-4">Realce Sua Beleza Natural</h2>
-                        <p class="text-sm sm:text-lg mb-6 sm:mb-8">Descubra nossa coleÃ§Ã£o exclusiva de produtos de beleza</p>
-                        <a href="#destaques"
-                           class="bg-pink-500 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full hover:bg-pink-600 transition-colors inline-block text-sm sm:text-base">
-                            Ver Destaques
-                        </a>
+            <div class="hero-overlay absolute inset-0 flex items-center">
+                <div class="container">
+                    <div class="hero-copy">
+                        <span class="eyebrow eyebrow-light">Sua beleza, do seu jeito</span>
+                        <h2>Beleza que começa<br>quando você se escolhe.</h2>
+                        <p>Uma curadoria de maquiagem e autocuidado para destacar o que você já tem de mais bonito.</p>
+                        <div class="hero-actions">
+                            <a href="#produtos" class="button button-primary" onclick="mostrarPainelCategorias()">Comprar agora</a>
+                            <a href="#destaques" class="button button-ghost">Ver curadoria <span aria-hidden="true">→</span></a>
+                        </div>
                     </div>
                 </div>
+            </div>
+            <button class="hero-control hero-control-prev" onclick="prevSlide()" aria-label="Banner anterior"><i class="bi bi-chevron-left"></i></button>
+            <button class="hero-control hero-control-next" onclick="nextSlide()" aria-label="Próximo banner"><i class="bi bi-chevron-right"></i></button>
+            <div class="hero-pagination" aria-label="Escolher banner">
+                <button class="active" onclick="goToSlide(0)" aria-label="Ver banner 1"></button>
+                <button onclick="goToSlide(1)" aria-label="Ver banner 2"></button>
+                <button onclick="goToSlide(2)" aria-label="Ver banner 3"></button>
             </div>
         </div>
     </section>
 
-    <!-- SeÃ§Ã£o de Categorias e Produtos -->
-    <section id="produtos" class="py-10 sm:py-16 bg-gray-50">
-        <div class="container mx-auto px-3 sm:px-4">
-            <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8">Nossos Produtos</h2>
+    <section class="scoop-spotlight" aria-labelledby="scoop-spotlight-title">
+        <div class="container">
+            <button type="button"
+                    class="scoop-spotlight-card"
+                    onclick="abrirScoopPremiado()"
+                    aria-label="Ver detalhes e comprar o Scoop Premiado">
+                <img src="assets/scoop-premiado.png"
+                     alt="Scoop Premiado Menina Moça: surpresa e diversão"
+                     width="1568"
+                     height="1024"
+                     loading="eager"
+                     decoding="async">
+                <span class="scoop-spotlight-action">
+                    <span>
+                        <small>Experiência Menina Moça</small>
+                        <strong id="scoop-spotlight-title">Conheça o Scoop Premiado</strong>
+                    </span>
+                    <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Seção de Categorias e Produtos -->
+    <section id="produtos" class="catalog-section">
+        <div class="container">
+            <div class="section-heading">
+                <span id="catalogo-eyebrow" class="eyebrow">Escolha seu universo</span>
+                <h2 id="catalogo-titulo">Compre por categoria</h2>
+                <p id="catalogo-descricao">Encontre sua categoria e descubra todos os produtos selecionados para você.</p>
+            </div>
 
             <div id="error-message" class="fixed top-4 right-4 bg-red-500 text-white p-4 rounded-lg hidden"></div>
 
-            <!-- Categorias -->
+            <!-- Navegação contextual: voltar e filtros de subcategoria -->
             <div id="categorias-buttons"></div>
 
-            <!-- Grid de Produtos: 2 colunas mobile, 3 colunas desktop -->
-            <div id="produtos-container" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            <!-- Primeiro exibe categorias; após a seleção, exibe os produtos -->
+            <div id="produtos-container" class="products-grid">
                 <!-- Produtos inseridos dinamicamente -->
             </div>
         </div>
     </section>
 
-    <!-- SeÃ§Ã£o de Destaques -->
-    <section id="destaques" class="py-16 bg-gradient-to-br from-pink-500 to-black">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12 text-white">Destaques</h2>
-            <div class="relative max-w-4xl mx-auto">
-                <div class="overflow-hidden rounded-2xl">
-                    <div id="destaques-container" class="flex transition-all duration-500 ease-out">
-                        <!-- Produtos em destaque inseridos aqui -->
+    <!-- Seção de Destaques -->
+    <section id="destaques" class="featured-section">
+        <div class="container featured-layout">
+            <div class="featured-intro">
+                <span class="eyebrow">Curadoria Menina Moça</span>
+                <h2>Os queridinhos da vez</h2>
+                <p>Aqueles produtos que entregam beleza, praticidade e viram parte da rotina.</p>
+                <a href="#produtos" class="text-link" onclick="mostrarPainelCategorias()">Explorar toda a coleção <span>→</span></a>
+            </div>
+            <div class="featured-showcase">
+                <div class="relative featured-carousel">
+                    <div class="overflow-hidden">
+                        <div id="destaques-container" class="flex transition-all duration-500 ease-out">
+                            <!-- Produtos em destaque inseridos aqui -->
+                        </div>
                     </div>
+                    <button id="prev-destaque" onclick="prevDestaque()"
+                             class="carousel-button carousel-button-prev">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button id="next-destaque" onclick="nextDestaque()"
+                             class="carousel-button carousel-button-next">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
                 </div>
-                <button id="prev-destaque" onclick="prevDestaque()"
-                        class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 sm:-translate-x-6 z-10
-                               bg-white/80 p-2 sm:p-3 rounded-full shadow-lg hover:bg-pink-500 hover:text-white
-                               transition-all duration-300 backdrop-blur-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
-                <button id="next-destaque" onclick="nextDestaque()"
-                        class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 sm:translate-x-6 z-10
-                               bg-white/80 p-2 sm:p-3 rounded-full shadow-lg hover:bg-pink-500 hover:text-white
-                               transition-all duration-300 backdrop-blur-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
+                <figure class="featured-editorial" aria-label="Inspiração de maquiagem Menina Moça">
+                    <img src="assets/queridinhos-mulher.jpg"
+                         alt="Mulher aplicando maquiagem com pincel"
+                         width="1122"
+                         height="1402"
+                         loading="lazy"
+                         decoding="async">
+                </figure>
             </div>
         </div>
     </section>
 
-    <!-- SeÃ§Ã£o de Promoções -->
-    <section id="promocoes" class="py-16 bg-gradient-to-r from-pink-500 to-transparent text-white">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold mb-8">Ofertas Especiais</h2>
-            <div id="ofertas-container" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-                <!-- Os produtos em promoÃ§Ã£o serÃ£o inseridos aqui -->
+    <!-- Seção de Promoções -->
+    <section id="promocoes" class="offers-section">
+        <div class="container">
+            <div class="offers-heading">
+                <div><span class="eyebrow eyebrow-light">Preço especial, beleza sem limites</span><h2>Novidades</h2></div>
+                <p>Uma seleção por tempo limitado para renovar seu nécessaire.</p>
+            </div>
+            <div id="ofertas-container" class="products-grid offers-grid">
+                <!-- Os produtos em promoção serão inseridos aqui -->
             </div>
         </div>
     </section>
 
-    <!-- SeÃ§Ã£o Sobre NÃ³s -->
-    <section id="Sobre" class="bg-pink-50 py-16 mt-8 sm:mt-16">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div class="rounded-lg overflow-hidden shadow-lg">
-                    <img src="assets/sobre.jpg" alt="Sobre Menina Moça" class="w-full h-full object-cover">
+    <!-- Seção Sobre Nós -->
+    <section id="Sobre" class="about-section">
+        <div class="container about-grid">
+                <div class="about-image-wrap">
+                    <img src="assets/sobre.jpg" alt="Jamile Lima, fundadora da Menina Moça, selecionando produtos" width="1280" height="1600" loading="lazy" decoding="async" class="w-full h-full object-cover">
+                    <div class="about-seal"><strong>Desde</strong><span>2018</span></div>
                 </div>
-                <div class="space-y-4">
-                    <h2 class="text-3xl font-bold text-pink-600">Nossa HistÃ³ria</h2>
-                    <p class="text-gray-700 leading-relaxed">
-                        Oi, me chamo Jamile Lima, sou a criadora da Menina Moça.
-                        A Menina Moça nasceu no ano de 2018 com o sonho de trazer beleza e autoestima para todas as mulheres.
-                        Nossos produtos sÃ£o cuidadosamente selecionados para proporcionar a melhor experiÃªncia para vocÃª,
-                        e tambÃ©m contamos com um atendimento personalizado para oferecer as melhores opÃ§Ãµes em maquiagens e cosmÃ©ticos.
+                <div class="about-copy">
+                    <span class="eyebrow">Mais que maquiagem</span>
+                    <h2>Uma história feita para realçar a sua.</h2>
+                    <p class="about-lead">Oi, eu sou Jamile Lima, criadora da Menina Moça.</p>
+                    <p>
+                        A marca nasceu em 2018 do sonho de levar beleza e autoestima para todas as mulheres. Cada produto é escolhido com carinho para proporcionar uma experiência especial, do primeiro contato ao momento em que você se olha no espelho.
                     </p>
-                    <p class="text-gray-700 leading-relaxed">
-                        Nossa missÃ£o Ã© fazer com que cada cliente se sinta especial e confiante,
-                        proporcionando uma experiÃªncia Ãºnica de compra e atendimento de qualidade.
+                    <p>
+                        Aqui, você também encontra atendimento próximo e personalizado para descobrir as melhores opções para o seu estilo, sua pele e sua rotina.
                     </p>
+                    <a href="https://wa.me/5585988740788" target="_blank" rel="noopener" class="text-link">Fale com a gente <span>→</span></a>
                 </div>
+        </div>
+    </section>
+
+    <section class="community-section">
+        <div class="container community-card">
+            <div>
+                <span class="eyebrow">Entre para o nosso universo</span>
+                <h2>Novidades, dicas e beleza<br>todos os dias.</h2>
+            </div>
+            <div class="community-actions">
+                <a href="https://instagram.com/meninamocamakeup_" target="_blank" rel="noopener" class="button button-primary"><i class="bi bi-instagram"></i> Seguir no Instagram</a>
+                <a href="https://wa.me/5585988740788" target="_blank" rel="noopener" class="button button-outline"><i class="bi bi-whatsapp"></i> Chamar no WhatsApp</a>
             </div>
         </div>
     </section>
+    </main>
 
     <!-- Footer -->
-    <footer class="bg-pink-600 text-white py-8 mt-16">
-        <div class="container mx-auto px-4 text-center">
-            <p>&copy; 2025 Menina Moça. Todos os direitos reservados.</p>
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand"><span>Menina Moça</span><small>MAKEUP</small><p>Beleza, autoestima e cuidado em cada escolha.</p></div>
+            <div><strong>Navegue</strong><a href="#produtos">Produtos</a><a href="#destaques">Destaques</a><a href="#promocoes">Ofertas</a><a href="#Sobre">Nossa história</a></div>
+            <div><strong>Atendimento</strong><a href="https://wa.me/5585988740788" target="_blank" rel="noopener">WhatsApp</a><a href="https://instagram.com/meninamocamakeup_" target="_blank" rel="noopener">Instagram</a><span>Segunda a sábado</span></div>
+            <div class="footer-assurance"><strong>Compre com tranquilidade</strong><p><i class="bi bi-shield-lock"></i> Ambiente seguro</p><p><i class="bi bi-bag-heart"></i> Embalado com carinho</p></div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2026 Menina Moça Makeup. Todos os direitos reservados.</p>
+            <p>Feito para destacar a sua beleza.</p>
         </div>
     </footer>
 
@@ -368,19 +530,19 @@
         </div>
     </div>
 
-    <!-- Container para os botÃµes de categoria -->
+    <!-- Container para os botões de categoria -->
     <div id="categorias-container" class="flex flex-wrap gap-2 mb-8 px-4 md:px-0"></div>
 
     <!-- Modal de Detalhes do Produto -->
     <div id="modal-produto" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto mx-4">
+        <div id="modal-produto-painel" class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto mx-4">
             <div class="relative p-2" id="modal-content">
-                <!-- ConteÃºdo serÃ¡ inserido dinamicamente -->
+                <!-- Conteúdo será inserido dinamicamente -->
             </div>
         </div>
     </div>
 
-    <!-- Modal: Login necessÃ¡rio para finalizar compra -->
+    <!-- Modal: Login necessário para finalizar compra -->
     <div id="modal-login-required" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[100]">
         <div class="bg-white rounded-2xl max-w-sm w-full mx-4 p-8 text-center shadow-2xl">
             <div class="w-16 h-16 rounded-full bg-pink-100 flex items-center justify-center mx-auto mb-4">
@@ -389,8 +551,8 @@
                           d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                 </svg>
             </div>
-            <h3 class="text-xl font-bold text-gray-800 mb-2">FaÃ§a login para continuar</h3>
-            <p class="text-sm text-gray-500 mb-6">Para finalizar sua compra, vocÃª precisa estar logado na sua conta.</p>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Faça login para continuar</h3>
+            <p class="text-sm text-gray-500 mb-6">Para finalizar sua compra, você precisa estar logado na sua conta.</p>
             <div class="flex flex-col gap-3">
                 <a href="login.html?redirect=index.html"
                    class="bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-xl font-semibold text-sm transition-colors">
@@ -404,11 +566,11 @@
         </div>
     </div>
 
-    <script type="module" src="script.js"></script>
+    <script type="module" src="script.js?v=20260829-announcement-three"></script>
     <script type="module">
         import { getUsuarioAtual, logout, onAuthChange } from './auth.js';
 
-        // Atualizar UI de acordo com o estado de autenticaÃ§Ã£o
+        // Atualizar UI de acordo com o estado de autenticação
         async function atualizarAuthUI() {
             const user = await getUsuarioAtual();
             const btnLogin    = document.getElementById('btn-login-header');
@@ -442,11 +604,11 @@
             }
         }
 
-        // Ouvir mudanÃ§as de auth
+        // Ouvir mudanças de auth
         onAuthChange(() => atualizarAuthUI());
         atualizarAuthUI();
 
-        // Toggle do menu de usuÃ¡rio
+        // Toggle do menu de usuário
         window.toggleMenuUsuario = function() {
             document.getElementById('menu-usuario').classList.toggle('hidden');
         };

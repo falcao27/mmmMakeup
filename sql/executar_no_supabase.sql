@@ -23,8 +23,12 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 CREATE TABLE IF NOT EXISTS public.categorias (
     id         BIGSERIAL    PRIMARY KEY,
     nome       VARCHAR(255) NOT NULL,
+    imagem     TEXT         DEFAULT NULL,
     created_at TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
+
+ALTER TABLE public.categorias
+    ADD COLUMN IF NOT EXISTS imagem TEXT DEFAULT NULL;
 
 -- ─────────────────────────────────────────────────────────────
 -- TABELA: subcategorias

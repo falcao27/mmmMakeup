@@ -100,6 +100,13 @@ app.get('/api/mercadopago/config', (req, res) => {
 app.use(express.static(frontendPath, {
     index: 'index.html',
     fallthrough: true,
+    setHeaders: (res, filePath) => {
+        if (path.extname(filePath).toLowerCase() === '.html') {
+            res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+            res.setHeader('Pragma', 'no-cache');
+            res.setHeader('Expires', '0');
+        }
+    },
 }));
 
 // â”€â”€ Middleware: verificar token Supabase + is_admin â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€

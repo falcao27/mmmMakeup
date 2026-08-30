@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Admin CRM | Menina Moça Makeup</title>
     <link rel="icon" href="assets/android-chrome-192x192.png">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -1375,7 +1378,9 @@ function renderCategorias(lista) {
             ? `<div class="mobile-list">${lista.map(c => `
                 <article class="mobile-card">
                     <div class="mobile-card-head">
-                        <div class="mobile-card-icon bg-pink-100 text-pink-600"><i class="bi bi-tags"></i></div>
+                        ${c.imagem
+                            ? `<img src="${escHtml(c.imagem)}" alt="" class="w-12 h-12 rounded-xl object-cover border border-pink-100 bg-pink-50">`
+                            : '<div class="mobile-card-icon bg-pink-100 text-pink-600"><i class="bi bi-tags"></i></div>'}
                         <div class="min-w-0 flex-1">
                             <h3 class="mobile-card-title">${c.nome}</h3>
                             <p class="mobile-card-sub">${dados.produtos.filter(p => p.categoria_id === c.id).length} produto(s)</p>
@@ -1398,10 +1403,13 @@ function renderCategorias(lista) {
     }
     document.getElementById('tbl-categorias').innerHTML = lista.length
         ? `<table>
-            <thead><tr><th>ID</th><th>Nome</th><th>Subcategorias</th><th>Produtos</th><th>Ações</th></tr></thead>
+            <thead><tr><th>ID</th><th>Imagem</th><th>Nome</th><th>Subcategorias</th><th>Produtos</th><th>Ações</th></tr></thead>
             <tbody>${lista.map(c => `
                 <tr>
                     <td class="text-gray-400 text-xs font-mono">${c.id}</td>
+                    <td>${c.imagem
+                        ? `<img src="${escHtml(c.imagem)}" alt="" class="w-14 h-11 rounded-lg object-cover border border-pink-100 bg-pink-50" onerror="this.style.display='none'">`
+                        : '<span class="text-xs text-gray-400">Sem imagem</span>'}</td>
                     <td class="font-medium">${c.nome}</td>
                     <td>${dados.subcategorias.filter(s => s.categoria_id === c.id).length}</td>
                     <td>${dados.produtos.filter(p => p.categoria_id === c.id).length}</td>
@@ -2192,7 +2200,7 @@ function camposProduto(p) {
             <div class="col-span-2">
                 <label class="lbl">Código de Barras</label>
                 <div class="flex gap-2">
-                    <input type="text" name="codigo_barras" id="campo-codigo-barras" class="inp" value="${codigoInicial}" placeholder="Leia ou digite o código..." autocomplete="off" inputmode="numeric">
+                    <input type="text" name="codigo_barras" id="campo-codigo-barras" class="inp" value="${codigoInicial}" placeholder="Leia ou digite o código..." autocomplete="off">
                     <button type="button" onclick="prepararLeitorCodigo()" class="btn btn-outline whitespace-nowrap" title="Focar campo para leitor">
                         <i class="bi bi-upc-scan"></i> Ler
                     </button>
@@ -2203,8 +2211,9 @@ function camposProduto(p) {
             <div><label class="lbl">Preço Original (R$)</label><input type="number" name="preco_original" class="inp" value="${p?.preco_original||''}" step="0.01" min="0"></div>
             <div><label class="lbl">Estoque</label><input type="number" name="estoque" class="inp" value="${p?.estoque??0}" min="0"></div>
             <div><label class="lbl">Qtd Vendidos</label><input type="number" name="qtd_vendidos" class="inp" value="${p?.qtd_vendidos||0}" min="0"></div>
-            <div><label class="lbl">Categoria</label><select name="categoria_id" class="inp"><option value="">– Selecione –</option>${cats}</select></div>
-            <div><label class="lbl">Subcategoria</label><select name="subcategoria_id" class="inp"><option value="">– Selecione –</option>${subs}</select></div>
+            <div><label class="lbl">Categoria</label><select name="categoria_id" class="inp"><option value="">Sem categoria (produto especial)</option>${cats}</select></div>
+            <div><label class="lbl">Subcategoria</label><select name="subcategoria_id" class="inp"><option value="">Sem subcategoria</option>${subs}</select></div>
+            <p class="col-span-2 text-xs text-gray-500">Produtos especiais podem ser salvos sem categoria e sem subcategoria.</p>
             <div class="col-span-2 rounded-xl border border-pink-100 bg-pink-50/40 p-3">
                 <div class="flex items-center gap-2 mb-3">
                     <span class="w-8 h-8 rounded-lg bg-white text-pink-500 flex items-center justify-center border border-pink-100"><i class="bi bi-palette"></i></span>
@@ -2279,8 +2288,100 @@ function camposProduto(p) {
         </div>`;
 }
 
+window.atualizarPreviewCategoria = function(src) {
+    const preview = document.getElementById('categoria-imagem-preview');
+    if (!preview) return;
+    preview.src = src?.trim() || 'https://placehold.co/240x180/fce7f3/c2255c?text=Categoria';
+};
+
+window.usarImagemCategoria = function(input) {
+    const file = input.files?.[0];
+    if (!file) return;
+    const status = document.getElementById('categoria-imagem-status');
+    const tiposPermitidos = ['image/jpeg', 'image/png', 'image/webp'];
+
+    if (!tiposPermitidos.includes(file.type)) {
+        mostrarToast('Escolha uma imagem JPG, PNG ou WebP.');
+        input.value = '';
+        return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+        mostrarToast('A imagem deve ter no máximo 10 MB.');
+        input.value = '';
+        return;
+    }
+
+    if (status) status.textContent = 'Otimizando imagem...';
+    const reader = new FileReader();
+    reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+            const maxSize = 1000;
+            const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.max(1, Math.round(img.width * scale));
+            canvas.height = Math.max(1, Math.round(img.height * scale));
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/jpeg', .82);
+            const campo = document.getElementById('campo-imagem-categoria');
+            if (campo) campo.value = dataUrl;
+            atualizarPreviewCategoria(dataUrl);
+            if (status) status.textContent = `Imagem pronta (${canvas.width} × ${canvas.height}px). Salve a categoria para publicar.`;
+        };
+        img.onerror = () => {
+            if (status) status.textContent = 'Não foi possível processar esta imagem.';
+            mostrarToast('Não foi possível processar esta imagem.');
+        };
+        img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+};
+
+window.removerImagemCategoria = function() {
+    const campo = document.getElementById('campo-imagem-categoria');
+    if (campo) campo.value = '';
+    atualizarPreviewCategoria('');
+    const status = document.getElementById('categoria-imagem-status');
+    if (status) status.textContent = 'Imagem removida. Salve a categoria para confirmar.';
+};
+
 function camposCategoria(c) {
-    return `<div><label class="lbl">Nome da Categoria *</label><input type="text" name="nome" class="inp" value="${c?.nome||''}" required placeholder="Ex: Maquiagem"></div>`;
+    const imagem = c?.imagem || '';
+    return `<div class="space-y-4">
+        <div><label class="lbl">Nome da Categoria *</label><input type="text" name="nome" class="inp" value="${escHtml(c?.nome||'')}" required placeholder="Ex: Maquiagem"></div>
+        <div>
+            <label class="lbl">Imagem da Categoria</label>
+            <div class="flex gap-3 items-start flex-wrap">
+                <img id="categoria-imagem-preview"
+                     src="${imagem ? escHtml(imagem) : 'https://placehold.co/240x180/fce7f3/c2255c?text=Categoria'}"
+                     class="w-32 h-24 rounded-xl object-cover border border-pink-100 bg-pink-50 flex-shrink-0"
+                     alt="Prévia da imagem da categoria"
+                     onerror="this.src='https://placehold.co/240x180/fce7f3/c2255c?text=Categoria'">
+                <div class="flex-1 min-w-[220px] space-y-2">
+                    <input type="text"
+                           name="imagem"
+                           id="campo-imagem-categoria"
+                           class="inp"
+                           value="${escHtml(imagem)}"
+                           placeholder="https://..."
+                           oninput="atualizarPreviewCategoria(this.value)">
+                    <div class="flex gap-2 flex-wrap">
+                        <label class="btn btn-outline cursor-pointer">
+                            <i class="bi bi-image"></i> Escolher imagem
+                            <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="usarImagemCategoria(this)">
+                        </label>
+                        <button type="button" class="btn btn-outline" onclick="removerImagemCategoria()">
+                            <i class="bi bi-x-lg"></i> Remover
+                        </button>
+                    </div>
+                    <p id="categoria-imagem-status" class="text-xs text-gray-500">Use JPG, PNG ou WebP. A imagem será otimizada antes de salvar.</p>
+                </div>
+            </div>
+        </div>
+    </div>`;
 }
 
 function camposSubcategoria(s) {
@@ -2305,6 +2406,10 @@ document.getElementById('modal-crud-form').addEventListener('submit', async (e) 
         if (editando.tipo === 'produto') {
             body.destaque    = !!e.target.querySelector('[name="destaque"]')?.checked;
             body.em_promocao = !!e.target.querySelector('[name="em_promocao"]')?.checked;
+            const categoriaId = e.target.querySelector('[name="categoria_id"]')?.value;
+            const subcategoriaId = e.target.querySelector('[name="subcategoria_id"]')?.value;
+            body.categoria_id = categoriaId ? parseInt(categoriaId) : null;
+            body.subcategoria_id = categoriaId && subcategoriaId ? parseInt(subcategoriaId) : null;
             if (body.preco)          body.preco          = parseFloat(body.preco);
             if (body.preco_original) body.preco_original = parseFloat(body.preco_original) || null;
             if (body.estoque       !== undefined) body.estoque       = parseInt(body.estoque||0);
@@ -2313,6 +2418,10 @@ document.getElementById('modal-crud-form').addEventListener('submit', async (e) 
                 const valor = e.target.querySelector(`[name="${campo}"]`)?.value?.trim();
                 body[campo] = valor || null;
             });
+        }
+        if (editando.tipo === 'categoria') {
+            const imagem = e.target.querySelector('[name="imagem"]')?.value?.trim();
+            body.imagem = imagem || null;
         }
         const tabela = { produto:'produtos', categoria:'categorias', subcategoria:'subcategorias' }[editando.tipo];
         let error;
@@ -2324,7 +2433,11 @@ document.getElementById('modal-crud-form').addEventListener('submit', async (e) 
         mostrarToast('Salvo com sucesso!');
     } catch (err) {
         const el = document.getElementById('modal-crud-alerta');
-        el.textContent = err.message || 'Erro ao salvar.';
+        const faltaColunaImagem = editando.tipo === 'categoria'
+            && /imagem|schema cache|categorias/i.test(`${err.code || ''} ${err.message || ''}`);
+        el.textContent = faltaColunaImagem
+            ? 'O banco ainda precisa da migração add_categorias_imagem.sql antes de salvar imagens.'
+            : (err.message || 'Erro ao salvar.');
         el.classList.remove('hidden');
     } finally {
         btn.disabled = false; btn.textContent = 'Salvar';

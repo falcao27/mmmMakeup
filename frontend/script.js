@@ -11,106 +11,6 @@ const STORE_WHATSAPP_PHONE = '5585988740788';
 const SCOOP_PRODUCT_CODE = 'SCOOP-PREMIADO-2026';
 let mercadoPagoConfigCache = null;
 
-// =====================================================
-// DADOS DE EXEMPLO (MOCK) — para visualização local/produção sem dependência do banco
-// Remove ou desativa em produção quando o Supabase estiver populado.
-// =====================================================
-const MOCK_CATEGORIAS = [
-    { id: 1, nome: 'Rosto', slug: 'rosto', ordem: 1 },
-    { id: 2, nome: 'Olhos', slug: 'olhos', ordem: 2 },
-    { id: 3, nome: 'Lábios', slug: 'labios', ordem: 3 },
-    { id: 4, nome: 'Pincéis', slug: 'pinceis', ordem: 4 },
-    { id: 5, nome: 'Acessórios', slug: 'acessorios', ordem: 5 }
-];
-
-const MOCK_SUBCATEGORIAS = [
-    { id: 22, nome: 'Base Líquida', categoria_id: 1 },
-    { id: 2, nome: 'Corretivo', categoria_id: 1 },
-    { id: 23, nome: 'Pó Facial', categoria_id: 1 },
-    { id: 4, nome: 'Blush', categoria_id: 1 },
-    { id: 24, nome: 'Bruma Fixadora', categoria_id: 1 },
-    { id: 5, nome: 'Máscara de Cílios', categoria_id: 2 },
-    { id: 25, nome: 'Paletas de Sombras', categoria_id: 2 },
-    { id: 7, nome: 'Delineador', categoria_id: 2 },
-    { id: 26, nome: 'Sombra e Iluminador', categoria_id: 2 },
-    { id: 27, nome: 'Sombra Marshmallow', categoria_id: 2 },
-    { id: 28, nome: 'Sombra Líquida e Primer', categoria_id: 2 },
-    { id: 8, nome: 'Batom', categoria_id: 3 },
-    { id: 9, nome: 'Gloss', categoria_id: 3 },
-    { id: 29, nome: 'Óleo Labial', categoria_id: 3 },
-    { id: 30, nome: 'Gloss Plump', categoria_id: 3 },
-    { id: 31, nome: 'Lápis de Boca', categoria_id: 3 },
-    { id: 11, nome: 'Pincéis Faciais', categoria_id: 4 },
-    { id: 12, nome: 'Pincéis de Olhos', categoria_id: 4 },
-    { id: 13, nome: 'Espelhos', categoria_id: 5 },
-    { id: 14, nome: 'Necessaires', categoria_id: 5 }
-];
-
-const MOCK_PRODUTOS = (() => {
-    const produtos = [];
-    let id = 100;
-    const items = [
-        { nome: 'Base Líquida HD', categoria_id: 1, subcategoria_id: 22, preco: 89.90, preco_original: 109.90, em_promocao: true, estoque: 12, descricao: 'Cobertura média a alta, acabamento natural e longa duração para todos os tons de pele.', imagem: 'assets/Batton-hero.jpg', vendas: 134 },
-        { nome: 'Corretivo Camuflagem', categoria_id: 1, subcategoria_id: 2, preco: 49.90, preco_original: 59.90, em_promocao: true, estoque: 8, descricao: 'Disfarça olheiras e imperfeições com alta cobertura sem craquelar.', imagem: 'assets/Batton-mobile.jpg', vendas: 98 },
-        { nome: 'Pó Compacto Velvet', categoria_id: 1, subcategoria_id: 23, preco: 59.90, preco_original: 0, em_promocao: false, estoque: 20, descricao: 'Acabamento aveludado, controla a oleosidade e fixa a maquiagem o dia todo.', imagem: 'assets/Paleta-hero.jpg', vendas: 76 },
-        { nome: 'Blush Cremoso Peach', categoria_id: 1, subcategoria_id: 4, preco: 45.00, preco_original: 0, em_promocao: false, estoque: 0, descricao: 'Textura cremosa que derrete na pele, cor natural e saudável.', imagem: 'assets/Paleta-mobile.jpg', vendas: 54 },
-        { nome: 'Blush Líquido Rosa Antigo', categoria_id: 1, subcategoria_id: 4, preco: 47.00, preco_original: 55.00, em_promocao: true, estoque: 15, descricao: 'Pigmento buildable que garante um glow romântico nas bochechas.', imagem: 'assets/Batton-hero.jpg', vendas: 112 },
-        { nome: 'Máscara de Cílios Volume', categoria_id: 2, subcategoria_id: 5, preco: 69.90, preco_original: 79.90, em_promocao: true, estoque: 22, descricao: 'Cílios alongados e volumosos com fórmula resistente à água.', imagem: 'assets/Pincel-hero.jpg', vendas: 210 },
-        { nome: 'Máscara de Cílios Alongamento', categoria_id: 2, subcategoria_id: 5, preco: 64.90, preco_original: 0, em_promocao: false, estoque: 18, descricao: 'Efeito de cílios postiços, define e alonga sem pesar.', imagem: 'assets/Pincel-mobile.jpg', vendas: 88 },
-        { nome: 'Paleta de Sombras Nude', categoria_id: 2, subcategoria_id: 25, preco: 129.00, preco_original: 159.00, em_promocao: true, estoque: 10, descricao: '12 tons matte e cintilantes, alta pigmentação e fácil esfumado.', imagem: 'assets/Paleta-hero.jpg', vendas: 167 },
-        { nome: 'Paleta de Sombras Rose', categoria_id: 2, subcategoria_id: 25, preco: 139.00, preco_original: 0, em_promocao: false, estoque: 9, descricao: 'Tons rosados e marrons para looks delicados e sofisticados.', imagem: 'assets/Paleta.jpg', vendas: 72 },
-        { nome: 'Delineador Líquido Preto', categoria_id: 2, subcategoria_id: 7, preco: 39.90, preco_original: 0, em_promocao: false, estoque: 25, descricao: 'Traço preciso, secagem rápida e durabilidade de até 12h.', imagem: 'assets/Batton-hero.jpg', vendas: 145 },
-        { nome: 'Delineador Colorido Pink', categoria_id: 2, subcategoria_id: 7, preco: 42.00, preco_original: 0, em_promocao: false, estoque: 11, descricao: 'Cor vibrante e marcante para ousar nos olhos.', imagem: 'assets/Batton.jpg', vendas: 43 },
-        { nome: 'Batom Matte Ruby', categoria_id: 3, subcategoria_id: 8, preco: 55.00, preco_original: 65.00, em_promocao: true, estoque: 30, descricao: 'Vermelho intenso, acabamento matte confortável e alta fixação.', imagem: 'assets/Batton-hero.jpg', vendas: 256 },
-        { nome: 'Batom Nude Rose', categoria_id: 3, subcategoria_id: 8, preco: 52.00, preco_original: 0, em_promocao: false, estoque: 28, descricao: 'Nude rosado perfeito para o dia a dia, hidrata e colore.', imagem: 'assets/Batton-mobile.jpg', vendas: 189 },
-        { nome: 'Gloss Hidratante', categoria_id: 3, subcategoria_id: 9, preco: 38.00, preco_original: 0, em_promocao: false, estoque: 35, descricao: 'Brilho 3D, fórmula não pegajosa e hidratação prolongada.', imagem: 'assets/Paleta-hero.jpg', vendas: 124 },
-        { nome: 'Lápis de Boca Rosé', categoria_id: 3, subcategoria_id: 31, preco: 29.90, preco_original: 0, em_promocao: false, estoque: 17, descricao: 'Define, preenche e aumenta a durabilção do batom.', imagem: 'assets/Pincel-hero.jpg', vendas: 67 },
-        { nome: 'Kit Pincéis Rosto', categoria_id: 4, subcategoria_id: 11, preco: 149.00, preco_original: 189.00, em_promocao: true, estoque: 6, descricao: '5 pincéis premium para base, pó, blush e contorno.', imagem: 'assets/Pincel.jpg', vendas: 92 },
-        { nome: 'Pincel de Esfumar', categoria_id: 4, subcategoria_id: 12, preco: 39.90, preco_original: 0, em_promocao: false, estoque: 14, descricao: 'Cerdas macias que facilitam o esfumado perfeito.', imagem: 'assets/Pincel-hero.jpg', vendas: 58 },
-        { nome: 'Pincel Aplicador de Sombra', categoria_id: 4, subcategoria_id: 12, preco: 34.90, preco_original: 0, em_promocao: false, estoque: 19, descricao: 'Aplicação precisa de sombras com pigmento uniforme.', imagem: 'assets/Pincel-mobile.jpg', vendas: 41 },
-        { nome: 'Espelho de Bolsa Iluminado', categoria_id: 5, subcategoria_id: 13, preco: 79.00, preco_original: 0, em_promocao: false, estoque: 13, descricao: 'Compacto com luz LED para retocar a make em qualquer lugar.', imagem: 'assets/Paleta-hero.jpg', vendas: 33 },
-        { nome: 'Necessaire Pink', categoria_id: 5, subcategoria_id: 14, preco: 89.00, preco_original: 99.00, em_promocao: true, estoque: 7, descricao: 'Espaçosa, impermeável e no tom rosa da marca.', imagem: 'assets/Batton-hero.jpg', vendas: 61 },
-        { nome: 'Lápis de Olho Marrom', categoria_id: 2, subcategoria_id: 7, preco: 32.00, preco_original: 0, em_promocao: false, estoque: 21, descricao: 'Marrom suave para delineados delicados no dia a dia.', imagem: 'assets/Pincel-hero.jpg', vendas: 49 },
-        { nome: 'Base Cushion', categoria_id: 1, subcategoria_id: 22, preco: 99.00, preco_original: 0, em_promocao: false, estoque: 16, descricao: 'Acabamento luminoso, prática para retoques e viagem.', imagem: 'assets/Paleta-mobile.jpg', vendas: 107 },
-        { nome: 'Corretivo Líquido', categoria_id: 1, subcategoria_id: 2, preco: 44.90, preco_original: 0, em_promocao: false, estoque: 24, descricao: 'Alta cobertura com acabamento natural e leve.', imagem: 'assets/Batton-mobile.jpg', vendas: 81 },
-        { nome: 'Pó Solto Translúcido', categoria_id: 1, subcategoria_id: 23, preco: 62.00, preco_original: 72.00, em_promocao: true, estoque: 11, descricao: 'Fixa a maquiagem sem adicionar cor ou textura.', imagem: 'assets/Paleta.jpg', vendas: 115 },
-        { nome: 'Batom Líquido Vinho', categoria_id: 3, subcategoria_id: 8, preco: 58.00, preco_original: 0, em_promocao: false, estoque: 20, descricao: 'Acabamento mate, não transfere e dura a noite toda.', imagem: 'assets/Batton.jpg', vendas: 138 },
-        { nome: 'Iluminador Compacto', categoria_id: 1, subcategoria_id: 4, preco: 67.00, preco_original: 77.00, em_promocao: true, estoque: 5, descricao: 'Glow natural para realçar pontos altos do rosto.', imagem: 'assets/Paleta-hero.jpg', vendas: 64 },
-        { nome: 'Fixador de Maquiagem', categoria_id: 1, subcategoria_id: 24, preco: 54.90, preco_original: 0, em_promocao: false, estoque: 23, descricao: 'Spray fixador que aumenta a durabilidade da make.', imagem: 'assets/Batton-hero.jpg', vendas: 73 },
-        { nome: 'Sombra Cremosa Rose', categoria_id: 2, subcategoria_id: 25, preco: 36.00, preco_original: 0, em_promocao: false, estoque: 27, descricao: 'Sombra 2 em 1: base e cor em um só produto.', imagem: 'assets/Paleta-mobile.jpg', vendas: 52 },
-        { nome: 'Gloss com Glitter', categoria_id: 3, subcategoria_id: 9, preco: 41.00, preco_original: 0, em_promocao: false, estoque: 18, descricao: 'Brilho extra para looks especiais e noite.', imagem: 'assets/Batton-mobile.jpg', vendas: 39 },
-        { nome: 'Kit Pincéis Olhos', categoria_id: 4, subcategoria_id: 12, preco: 119.00, preco_original: 149.00, em_promocao: true, estoque: 4, descricao: '4 pincéis essenciais para esfumar, aplicar e delineador.', imagem: 'assets/Pincel.jpg', vendas: 29 },
-        { nome: 'Removedor de Maquiagem Bifásico', categoria_id: 5, subcategoria_id: 14, preco: 48.00, preco_original: 0, em_promocao: false, estoque: 31, descricao: 'Remove maquiagem à prova d’água sem agredir a pele.', imagem: 'assets/Paleta-hero.jpg', vendas: 86 },
-        { nome: 'Duo Sombra e Iluminador', categoria_id: 2, subcategoria_id: 26, preco: 74.00, preco_original: 0, em_promocao: false, estoque: 12, descricao: 'Dupla função: sombra pigmentada e iluminador glow em um só produto.', imagem: 'assets/Paleta-hero.jpg', vendas: 44 },
-        { nome: 'Sombra Marshmallow', categoria_id: 2, subcategoria_id: 27, preco: 46.00, preco_original: 0, em_promocao: false, estoque: 15, descricao: 'Textura macia tipo marshmallow, cor intensa e esfumado fácil.', imagem: 'assets/Paleta-mobile.jpg', vendas: 37 },
-        { nome: 'Sombra Líquida com Primer', categoria_id: 2, subcategoria_id: 28, preco: 52.00, preco_original: 0, em_promocao: false, estoque: 9, descricao: 'Sombra líquida com primer embutido para fixação prolongada.', imagem: 'assets/Batton-hero.jpg', vendas: 28 },
-        { nome: 'Óleo Labial Hidratante', categoria_id: 3, subcategoria_id: 29, preco: 42.00, preco_original: 0, em_promocao: false, estoque: 26, descricao: 'Nutrição intensa com brilho natural e toque aveludado.', imagem: 'assets/Batton-mobile.jpg', vendas: 95 },
-        { nome: 'Gloss Plump Volume', categoria_id: 3, subcategoria_id: 30, preco: 49.00, preco_original: 0, em_promocao: false, estoque: 20, descricao: 'Efeito volume imediato com sensação refrescante e brilho intenso.', imagem: 'assets/Paleta-hero.jpg', vendas: 71 }
-    ];
-
-    items.forEach(item => {
-        produtos.push({
-            id: String(id++),
-            nome: item.nome,
-            categoria_id: item.categoria_id,
-            subcategoria_id: item.subcategoria_id,
-            preco: item.preco,
-            preco_original: item.preco_original,
-            em_promocao: item.em_promocao,
-            estoque: item.estoque,
-            descricao: item.descricao,
-            imagem: item.imagem,
-            url_imagem: item.imagem,
-            imagem_url: item.imagem,
-            vendas: item.vendas,
-            destaque: item.vendas > 150,
-            categoria: { nome: MOCK_CATEGORIAS.find(c => c.id === item.categoria_id).nome },
-            created_at: new Date().toISOString()
-        });
-    });
-    return produtos;
-})();
-
 // Função global para alternar o carrinho
 function getProdutoImagem(produto) {
     return produto?.imagem || produto?.url_imagem || DEFAULT_IMAGE;
@@ -308,11 +208,8 @@ class CarrinhoManager {
                 .eq('id', produtoId)
                 .single();
 
-            let produto = produtoDb;
-            if (error || !produto) {
-                if (error) console.warn('Erro ao buscar produto no carrinho, usando mock:', error.message);
-                produto = MOCK_PRODUTOS.find(p => String(p.id) === String(produtoId)) || null;
-            }
+            const produto = produtoDb;
+            if (error) console.warn('Erro ao buscar produto no carrinho:', error.message);
 
             if (!produto) {
                 alert('Produto não encontrado.');
@@ -605,11 +502,8 @@ window.abrirEscolhaProduto = async function(produtoId, quantidade = 1) {
             .eq('id', produtoId)
             .single();
 
-        let produto = produtoDb;
-        if (error || !produto) {
-            if (error) console.warn('Erro ao buscar produto para variação, usando mock:', error.message);
-            produto = MOCK_PRODUTOS.find(p => String(p.id) === String(produtoId)) || null;
-        }
+        const produto = produtoDb;
+        if (error) console.warn('Erro ao buscar produto para variação:', error.message);
 
         if (!produto) {
             alert('Produto não encontrado.');
@@ -1229,10 +1123,10 @@ async function filterProductsBySearchTerm(searchTerm) {
             .select('*');
 
         if (error) {
-            console.warn('Erro ao buscar produtos para pesquisa, usando mock:', error.message);
+            console.warn('Erro ao buscar produtos para pesquisa:', error.message);
         }
 
-        const produtos = fallbackProdutos(data);
+        const produtos = data || [];
         allProducts = produtos;
 
         const produtosContainer = document.getElementById('produtos-container');
@@ -1324,10 +1218,10 @@ async function carregarProdutos(categoriaNome = 'todos') {
         const { data, error } = await query;
         
         if (error) {
-            console.warn('Erro ao buscar produtos, usando mock:', error.message);
+            console.warn('Erro ao buscar produtos:', error.message);
         }
 
-        const produtos = fallbackProdutos(data);
+        const produtos = data || [];
         allProducts = produtos;
 
         mostrarSkeletonProdutos(produtosContainer, 8);
@@ -1377,22 +1271,6 @@ function renderSkeletonProdutos(count = 8) {
 function mostrarSkeletonProdutos(container, count = 8) {
     if (!container) return;
     container.innerHTML = renderSkeletonProdutos(count);
-}
-
-// Retorna produtos de demonstração quando o banco está indisponível ou vazio
-function fallbackProdutos(data) {
-    if (Array.isArray(data) && data.length > 0) return data;
-    return MOCK_PRODUTOS.map(p => ({ ...p }));
-}
-
-function fallbackCategorias(data) {
-    if (Array.isArray(data) && data.length > 0) return data;
-    return MOCK_CATEGORIAS.map(c => ({ ...c }));
-}
-
-function fallbackSubcategorias(data) {
-    if (Array.isArray(data) && data.length > 0) return data;
-    return MOCK_SUBCATEGORIAS.map(s => ({ ...s }));
 }
 
 function renderSkeletonDestaque() {
@@ -1687,19 +1565,19 @@ async function carregarCategorias() {
         ]);
 
         if (categoriasResult.error) {
-            console.warn('Erro ao buscar categorias, usando mock:', categoriasResult.error.message);
+            console.warn('Erro ao buscar categorias:', categoriasResult.error.message);
         }
         if (subcategoriasResult.error) {
-            console.warn('Erro ao buscar subcategorias, usando mock:', subcategoriasResult.error.message);
+            console.warn('Erro ao buscar subcategorias:', subcategoriasResult.error.message);
         }
         if (produtosResult.error) {
-            console.warn('Erro ao buscar produtos para as categorias, usando mock:', produtosResult.error.message);
+            console.warn('Erro ao buscar produtos para as categorias:', produtosResult.error.message);
         }
 
-        catalogoCategorias = fallbackCategorias(categoriasResult.data)
+        catalogoCategorias = (categoriasResult.data || [])
             .sort((a, b) => Number(a.ordem || 0) - Number(b.ordem || 0));
-        catalogoSubcategorias = fallbackSubcategorias(subcategoriasResult.data);
-        allProducts = fallbackProdutos(produtosResult.data);
+        catalogoSubcategorias = subcategoriasResult.data || [];
+        allProducts = produtosResult.data || [];
 
         // Os menus continuam levando para o mesmo painel contextual do catálogo.
         renderizarMenuPrincipalCategorias();
@@ -1708,9 +1586,9 @@ async function carregarCategorias() {
 
     } catch (error) {
         console.error('Erro ao carregar categorias:', error);
-        catalogoCategorias = fallbackCategorias();
-        catalogoSubcategorias = fallbackSubcategorias();
-        allProducts = fallbackProdutos();
+        catalogoCategorias = [];
+        catalogoSubcategorias = [];
+        allProducts = [];
         if (document.getElementById('produtos-container')) {
             mostrarPainelCategorias();
         }
@@ -2163,11 +2041,10 @@ async function carregarProdutosDestaque() {
         .eq('destaque',true);
 
         if (error) {
-            console.warn('Erro ao buscar produtos em destaque, usando mock:', error.message);
+            console.warn('Erro ao buscar produtos em destaque:', error.message);
         }
 
-        let produtos = fallbackProdutos(data);
-        produtos = produtos.filter(p => p.destaque === true);
+        const produtos = data || [];
 
         mostrarSkeletonDestaque(destaquesContainer);
 
@@ -2300,17 +2177,21 @@ async function carregarProdutosPromocao() {
             return;
         }
 
+        // Novidades: produtos mais recentes cadastrados no banco
         const { data, error } = await supabase
             .from('produtos')
             .select('*')
-            .eq('em_promocao', true);
+            .eq('ativo', true)
+            .order('created_at', { ascending: false })
+            .limit(9);
 
         if (error) {
-            console.warn('Erro ao buscar produtos em promoção, usando mock:', error.message);
+            console.warn('Erro ao buscar novidades:', error.message);
         }
 
-        let produtos = fallbackProdutos(data);
-        produtos = produtos.filter(p => p.em_promocao === true);
+        const produtos = (data || [])
+            .filter(p => p.codigo_barras !== SCOOP_PRODUCT_CODE)
+            .slice(0, 8);
 
         mostrarSkeletonProdutos(promocoesContainer, 4);
 
@@ -2320,7 +2201,7 @@ async function carregarProdutosPromocao() {
         } else {
             promocoesContainer.innerHTML = `
                 <div class="col-span-full text-center py-8">
-                    <p class="text-white">Nenhum produto em promoção disponível no momento.</p>
+                    <p class="text-white">Nenhuma novidade disponível no momento.</p>
                 </div>
             `;
         }
@@ -2331,7 +2212,7 @@ async function carregarProdutosPromocao() {
         if (promocoesContainer) {
             promocoesContainer.innerHTML = `
                 <div class="col-span-full text-center py-8">
-                    <p class="text-white">Erro ao carregar produtos em promoção. Por favor, tente novamente mais tarde.</p>
+                    <p class="text-white">Erro ao carregar novidades. Por favor, tente novamente mais tarde.</p>
                 </div>
             `;
         }
@@ -2545,11 +2426,8 @@ async function abrirDetalheProduto(produtoId) {
             .eq('id', produtoId)
             .single();
 
-        let produto = dbProduto;
-        if (error || !produto) {
-            if (error) console.warn('Erro ao buscar produto no modal, usando mock:', error.message);
-            produto = MOCK_PRODUTOS.find(p => String(p.id) === String(produtoId)) || null;
-        }
+        const produto = dbProduto;
+        if (error) console.warn('Erro ao buscar produto no modal:', error.message);
 
         if (!produto) {
             modalContent.innerHTML = `<p class="p-6 text-center text-red-500">Produto não encontrado.</p>`;
